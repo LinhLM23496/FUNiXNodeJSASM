@@ -1,0 +1,29 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/covid.css">
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <div class="grid mt-5">
+            <article class="mx-auto">
+                <h2 class="product__description">
+                    <%= user.name %>
+                </h2>
+                <form action="/covid/positive" method="post">
+                    <div class="card__content">
+                        <label id="active"> Ngày nhiễm: </label>
+                        <input type="date" id="date" name="date">
+                </br>
+                        <label id="active"> Thông báo: </label>
+                        <select class="form-control" id="statusCovid" name="statusCovid">
+                            <option value="true">Dương tính</option>
+                            <option value="false">Âm tính</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="mx-auto btn-primary">Cập nhật thông tin</button>
+                </form>
+            </article>
+        </div>
+    </main>
+<%- include('../includes/end.ejs') %></body>

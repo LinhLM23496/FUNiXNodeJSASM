@@ -1,0 +1,41 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/public/css/works.css">
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <div class="grid">
+            <% if(!user.statusWork) { %> 
+            <form  class="product-form mx-auto pt-5" style="width: 400px;"action="/work-end" method="POST">
+                <div class="form-control px-5 pb-5">
+                    <h3>Tên: <%= user.name %></h3>
+                    <p>Bộ phận: <%= user.department %></p>
+                    <label for="liveWork">Nơi làm việc</label>
+                    <select class="form-control" id="liveWork" name="liveWork">
+                        <option value="1">Công ty</option>
+                        <option value="2">Nhà</option>
+                        <option value="3">Khách hàng</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-danger">Điểm danh vào làm</button>
+            </form>
+            <% } else { %>
+                <form  class="product-form mx-auto pt-5" style="width: 400px;"action="/report/daily" method="POST">
+                    <input type="hidden" value="<%= work._id %>" name="workId">
+                    <div class="form-control px-5 pb-5">
+                        <h3>Tên: <%= user.name %></h3>
+                        <p>Bộ phận: <%= user.department %></p>
+                        <label for="liveWork">Nơi làm việc</label>
+                        <p>- <% 
+                            if (work.position === 1) { %>Công ty<% } 
+                            if (work.position === 2) { %>Nhà<% }  
+                            if (work.position === 3) { %>Khách hàng<% } 
+                        %></p>
+                    </div>
+                    <button type="submit" class="btn btn-danger">Điểm danh ra về</button>
+                </form>
+            <% } %> 
+        </div>
+    </main>
+<%- include('../includes/end.ejs') %></body>

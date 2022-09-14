@@ -1,0 +1,42 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/report.css">
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+    <main>
+        <% if (prods.length > 0) { %>
+            <header>
+                <p>Ngày: <%= date %></p>
+                <p>Đăng ký nghỉ: <%= timeLeave %></p>
+                <p>Tổng giờ đã làm: <%= lastTotalTime == 0 ? 'chưa kết thúc làm việc' : lastTotalTime %>  </p>
+            </header>
+            </br>
+            <div class="grid mt-5">
+                <% for (let work of prods) { %>
+                    <div class="card__content">
+                            <p>Nơi làm việc: <% 
+                            if (work.position === 1) { %>Công ty<% } 
+                            if (work.position === 2) { %>Nhà<% }    
+                            if (work.position === 3) { %>Khách hàng<% } 
+                        %></p>
+                        <p class="product__description">Giờ vào: 
+                            <%= work.start %>
+                        </p>
+                        <p class="product__description">Giờ ra: 
+                            <%= work.end %>
+                        </p>
+                        <p class="product__description">Giờ làm thực tế: 
+                            <%= work.workTime %>
+                        </p>
+                        <p class="product__description">Tăng ca: 
+                            <%= work.overTime %>
+                        </p>
+                    </div>
+                <% } %>
+            </div>
+            <% } else { %>
+                <h1>No Products Found!</h1>  
+                <% } %>
+    </main>
+<%- include('../includes/end.ejs') %></body>

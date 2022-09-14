@@ -1,0 +1,21 @@
+const mongoose = require('mongoose');
+
+const Schema = mongoose.Schema;
+
+const workSchema = new Schema({
+    start: { type: String, required: true }, 
+    end: { type: String, required: true }, 
+    date: { type: String, required: true }, 
+    workTime: { type: String, required: true }, 
+    totalWorkTime: { type: String, required: true }, 
+    position: { type: Number, required: true }, 
+    leaveTime: { type: String, required: true }, 
+    position: { type: Number, required: true }, 
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    }
+});
+
+module.exports = mongoose.model('Work', workSchema);
