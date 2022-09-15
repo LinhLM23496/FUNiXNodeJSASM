@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Leave = require('../models/leave');
 
 exports.getIndex = (req, res, next) => {
+  let a = 0;
   Promise.all([User.findOne(), Work.findOne()])
     .then(result => {
       const [user, work] = result;
