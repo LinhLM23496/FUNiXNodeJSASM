@@ -65,6 +65,7 @@ exports.postIndex = (req, res, next) => {
           work.workTime = moment.utc(time * 1000).format('HH:mm:ss');
           total = time + totalTime;
           work.totalWorkTime = moment.utc(total * 1000).format('HH:mm:ss');
+          console.log(work);
           return work.save();
         })
       res.redirect(301, '/report/daily')

@@ -7,6 +7,7 @@ const workSchema = new Schema({
     end: { type: String, required: true }, 
     date: { type: String, required: true }, 
     workTime: { type: String, required: true }, 
+    overTime: { type: String, required: false }, 
     totalWorkTime: { type: String, required: true }, 
     position: { type: Number, required: true }, 
     leaveTime: { type: String, required: true }, 
