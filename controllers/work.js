@@ -4,7 +4,6 @@ const User = require('../models/user');
 const Leave = require('../models/leave');
 
 exports.getIndex = (req, res, next) => {
-  let a = 0;
   Promise.all([User.findOne(), Work.findOne()])
     .then(result => {
       const [user, work] = result;
@@ -160,11 +159,6 @@ exports.postCheckLeave = (req, res, next) => {
     } else {
       res.redirect('/leaveday')
     }
-    console.log('leaveDate', leaveDate);
-    console.log('leaveFromDate', leaveFromDate);
-    console.log('leaveToDate', leaveToDate);
-    console.log('reason', reason);
-    console.log('leaveTime', leaveTime);
     const leave = new Leave({
       leaveDate: leaveDate,
       leaveTime: leaveTime,
