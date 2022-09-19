@@ -1,28 +1,26 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/public/css/covid.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/works.css">
 </head>
 
 <body>
     <%- include('../includes/navigation.ejs') %>
-    <main>
-        <div class="grid mt-5">
-            <article class="mx-auto">
-                <h2 class="product__description">
+        <div class="grid">
+            <article class="user-content">
+                <h2 class="mb-3 ml-4 user-name">
                     <%= user.name %>
                 </h2>
                 <form action="/covid/positive" method="POST">
-                    <div class="card__content">
-                        <label>Ngày: <%= date %> </label>
+                    <h5>Ngày: <%= date %> </h5>
                     </br>
-                        <label>
-                            Nhiệt độ: 
-                            <input type="number" id="temperature" name="temperature" min="0.0" max="100.0" value="36"  step="0.1"/> 
-                            độ C
-                        </label>
-                    </div>
-                    <button type="submit" class="btn-primary mx-auto">Cập nhật thông tin</button>
+                    <h5>
+                        Nhiệt độ: 
+                        <input type="number" id="temperature" name="temperature" min="0.0" max="100.0" value="36"  step="0.1"/> 
+                        độ C
+                    </h5>
+                    <button type="submit" class="btn btn-shimmer btn-primary mt-5">Cập nhật thông tin</button>
                 </form>
             </article>
         </div>
-    </main>
-<%- include('../includes/end.ejs') %></body>
+    <%- include('../includes/end.ejs') %>
+</body>

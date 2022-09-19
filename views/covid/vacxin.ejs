@@ -1,48 +1,43 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/covid.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/works.css">
 </head>
 
 <body>
     <%- include('../includes/navigation.ejs') %>
-    <main>
-        <div class="grid mt-5">
+        <div class="grid">
             <form action="/covid/vacxin" method="post">
                 <article class="card">
-                    <div class="card__content">
-                        <label for="addressVacxin1">
-                            Mũi 1: 
-                        </label>
-                        <select class="form-control" id="addressVacxin1" name="addressVacxin1">
-                            <option value="1" selected>Sinopharm</option>
-                            <option value="2">Pfizer</option>
-                            <option value="3">Moderna</option>
-                            <option value="4">AstraZeneca</option>
-                        </select>
-                        <label for="timeVacxin1">
-                            Ngày tiêm: 
-                            <input type="date" id="timeVacxin1" name="timeVacxin1" />
-                        </label>
-                    </div>
+                    <label for="addressVacxin1">
+                        Mũi 1: 
+                    </label>
+                    <select class="form-control" id="addressVacxin1" name="addressVacxin1">
+                        <option value="1" selected>Sinopharm</option>
+                        <option value="2">Pfizer</option>
+                        <option value="3">Moderna</option>
+                        <option value="4">AstraZeneca</option>
+                    </select>
+                    <label class="mt-2" for="timeVacxin1">
+                        Ngày tiêm: 
+                        <input type="date" id="timeVacxin1" name="timeVacxin1" />
+                    </label>
                 </article>
                 <article class="card">
-                    <div class="card__content">
-                        <label for="addressVacxin2">
-                            Mũi 2: 
-                        </label>
-                        <select class="form-control" id="addressVacxin2" name="addressVacxin2">
-                            <option value="1" selected>Sinopharm</option>
-                            <option value="2">Pfizer</option>
-                            <option value="3">Moderna</option>
-                            <option value="4">AstraZeneca</option>
-                        </select>
-                        <label for="timeVacxin2">
-                            Ngày tiêm: 
-                            <input type="date" id="timeVacxin2" name="timeVacxin2" />
-                        </label>
-                    </div>
-                    <button type="submit" class="btn-primary">Cập nhật thông tin</button>
+                    <label for="addressVacxin2">
+                        Mũi 2: 
+                    </label>
+                    <select class="form-control" id="addressVacxin2" name="addressVacxin2">
+                        <option value="1" selected>Sinopharm</option>
+                        <option value="2">Pfizer</option>
+                        <option value="3">Moderna</option>
+                        <option value="4">AstraZeneca</option>
+                    </select>
+                    <label class="mt-2" for="timeVacxin2">
+                        Ngày tiêm: 
+                        <input type="date" id="timeVacxin2" name="timeVacxin2" />
+                    </label>
                 </article>
+                    <button type="submit" class="btn btn-shimmer btn-primary mt-2">Cập nhật thông tin</button>
             </form>
         </div>
-    </main>
 <%- include('../includes/end.ejs') %></body>

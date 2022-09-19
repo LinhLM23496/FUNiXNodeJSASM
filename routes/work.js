@@ -10,7 +10,7 @@ router.get('/', workController.getIndex);
 
 router.post('/report/daily', workController.postIndex);
 
-router.post('/work-end', workController.postWorkend);
+router.post('/work-end', workController.postWorkEnd);
 
 router.get('/checkleave', workController.getCheckLeave);
 

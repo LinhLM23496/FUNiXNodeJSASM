@@ -1,5 +1,6 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/public/css/report.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/report.css">
 </head>
 
 <body>
@@ -9,24 +10,31 @@
             <article class="card__content">
                 <form action="/report/salary" method="POST">
                     <input type="month" name="month" id="month">
-                    <button type="submit" class="btn-primary">Chọn</button>
+                    <button type="submit" class="btn-submit btn-shimmer btn-info">Chọn</button>
                 </form>
                 <% if (haveWork) { %>
-                <div class="card__content">
-                        <p>Tháng: <%= today %> </p>
-                        <p class="product__description">Lương: 
-                            <%= salaryScale %>
-                        </p>
-                        <p class="product__description">Số giờ làm: 
-                            <%= workTime %>
-                        </p>
-                        <p class="product__description">Số giờ tăng ca:
-                            <%= overTime %>
-                        </p>
-                        <p class="product__description">Số giờ thiếu:
-                            <%= enoughTime %> giờ
-                        </p>
-                    </div>
+                <table class=" mt-5">
+                    <tr>
+                        <td>Tháng</td>
+                        <td><%= today %></td>
+                    </tr>
+                    <tr>
+                        <td>Lương</td>
+                        <td><%= salaryScale %> (đồng)</td>
+                    </tr>
+                    <tr>
+                        <td>Số giờ làm</td>
+                        <td><%= workTime %></td>
+                    </tr>
+                    <tr>
+                        <td>Số giờ tăng ca</td>
+                        <td><%= overTime %></td>
+                    </tr>
+                    <tr>
+                        <td>Số giờ thiếu</td>
+                        <td><%= enoughTime %> (giờ)</td>
+                    </tr>
+                </table>
                 <% } %>
             </article>
         </div>

@@ -1,44 +1,37 @@
 <%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/works.css">
     </head>
 
     <body>
         <%- include('../includes/navigation.ejs') %>
-
-            <main>
-                <div class="grid">
-                    <article class="card product-item mx-auto">
-                        <header class="card__header">
-                            <div class="card__image">
-                                <img src="<%= user.imageUrl %>" alt="<%= user.title %>">
-                            </div>
-                        </header>
-                        <h2 class="product__title">
-                            <%= user.name %>
-                        </h2>
-                        <div class="card__content">
-                            <p class="product__description">Email: 
-                                <%= user.email %>
-                            </p>
-                            <p class="product__description">Phòng ban: 
-                                <%= user.department %>
-                            </p>
-                            <p class="product__description">Ngày sinh: 
-                                <%= user.Dob %>
-                            </p>
-                            <p class="product__description">Ngày bắt đầu: 
-                                <%= user.startDate %>
-                            </p>
-                            <p class="product__description">Số ngày phép: 
-                                <%= (user.annualLeave/8).toFixed(1) %>
-                            </p>
-                        </div>
-                        <form action="/user" method="post">
-                            <label for="imageUrl">Url hình ảnh: </label>
-                            <input type="text" id="imageUrl" name="imageUrl" />
-                            <button type="submit" class="btn-primary" >Cập nhật hình ảnh</button>
-                        </form>
-                    </article>
-                </div>
-            </main>
+            <div class="grid">
+                <article class="user-content">
+                    <div class="card-image">
+                        <img src="<%= user.imageUrl %>" alt="<%= user.title %>">
+                    </div>
+                    <h2 class="mt-3 ml-4 user-name">
+                        <%= user.name %><i class="bi bi-circle-fill ml-2" style="font-size: 1rem; color: <% if (user.statusWork) { %>rgb(59, 255, 59)<% } else { %>red<% } %>"></i>
+                    </h2>
+                    <p class="product__description">Email: 
+                        <%= user.email %>
+                    </p>
+                    <p class="product__description">Phòng ban: 
+                        <%= user.department %>
+                    </p>
+                    <p class="product__description">Ngày sinh: 
+                        <%= user.Dob %>
+                    </p>
+                    <p class="product__description">Ngày bắt đầu: 
+                        <%= user.startDate %>
+                    </p>
+                    <p class="product__description">Số ngày phép: 
+                        <%= (user.annualLeave/8).toFixed(1) %>
+                    </p>
+                    <form action="/user" method="post">
+                        <label for="imageUrl">Url : <input type="text" class="imageUrl" id="imageUrl" name="imageUrl" /></label>
+                        <button type="submit" class="btn btn-shimmer btn-primary" >Cập nhật hình ảnh</button>
+                    </form>
+                </article>
+            </div>
             <%- include('../includes/end.ejs') %>

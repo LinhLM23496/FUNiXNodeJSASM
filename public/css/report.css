@@ -1,30 +1,27 @@
-.grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: stretch;
+.table {
+    width: 100%;
+}  
+table, th, td {  
+    border: 1px solid hotpink;  
+    border-collapse: collapse;  
+}  
+th, td {  
+    padding: 10px;  
+}  
+
+tr:nth-child(even) {  
+    background-color: #eee;  
+}  
+
+tr:nth-child(odd) {  
+    background-color: #fff;  
+}  
+th {  
+    color: white;  
+    background-color: gray;  
 }
 
-.card {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-}
-  
-.card__header,
-.card__content {
-padding: 1rem;
-}
-
-.card__header h1,
-.card__content h1,
-.card__content h2,
-.card__content p {
-margin: 0;
-}
-
-.card__image {
-width: 100%;
-}
-  
-.card__image img {
-width: 100%;
+.btn-submit {
+    border-radius: 10px;
+    padding: 0 16px;
 }

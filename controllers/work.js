@@ -7,7 +7,7 @@ exports.getIndex = (req, res, next) => {
   Promise.all([User.findOne(), Work.findOne()])
     .then(result => {
       const [user, work] = result;
-      if(!user.statusWork) {
+      if (!user.statusWork) {
         res.render('work/index', {
           user: user,
           pageTitle: 'Works Start',
@@ -35,14 +35,14 @@ exports.postIndex = (req, res, next) => {
   const formatDate = moment(today).format('DD/MM/YYYY')
   const hours = moment(today).format('HH:mm:ss');
   const formatHoursToSeconds = moment.duration(hours).asSeconds()
-  Promise.all([User.findOne(),Work.find({ date: formatDate })])
+  Promise.all([User.findOne(), Work.find({ date: formatDate })])
     .then(result => {
       const [user1, workDate] = result;
-     // tính tổng thời gian làm việc trong ngày mỗi khi check out 
+      // tính tổng thời gian làm việc trong ngày mỗi khi check out 
       workDate.map(r => {
         totalTime += moment.duration(r.workTime).asSeconds()
       })
-      Promise.all([User.findOne(),Work.findById(user1.workId)])
+      Promise.all([User.findOne(), Work.findById(user1.workId)])
         .then(result => {
           const [user, work] = result;
           let total = 0;
@@ -65,7 +65,6 @@ exports.postIndex = (req, res, next) => {
           work.workTime = moment.utc(time * 1000).format('HH:mm:ss');
           total = time + totalTime;
           work.totalWorkTime = moment.utc(total * 1000).format('HH:mm:ss');
-          console.log(work);
           return work.save();
         })
       res.redirect(301, '/report/daily')
@@ -74,7 +73,7 @@ exports.postIndex = (req, res, next) => {
 };
 
 // CHECK IN
-exports.postWorkend = (req, res, next) => {
+exports.postWorkEnd = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
   // format ngày tháng năm & giờ phút giây
@@ -112,7 +111,7 @@ exports.postWorkend = (req, res, next) => {
             user: user,
           });
         })
-      })     
+    })
     .catch(err => console.log(err));
 };
 
@@ -170,10 +169,10 @@ exports.postCheckLeave = (req, res, next) => {
     User.findOne()
       .then(user => {
         // tính thời gian nghỉ phép còn lại
-          user.annualLeave = user.annualLeave - leaveTime;
-          user.time = user.time - leaveTime * 3600;
-          user.save()
-          res.redirect('/user')
+        user.annualLeave = user.annualLeave - leaveTime;
+        user.time = user.time - leaveTime * 3600;
+        user.save()
+        res.redirect('/user')
       })
       .catch(err => console.log(err));
   } else if (leaveFromDate) {
@@ -198,10 +197,10 @@ exports.postCheckLeave = (req, res, next) => {
     User.findOne()
       .then(user => {
         // tính thời gian nghỉ phép còn lại
-          user.annualLeave = user.annualLeave - leaveTime;
-          user.time = user.time - leaveTime * 3600;
-          user.save()
-          res.redirect('/user')
+        user.annualLeave = user.annualLeave - leaveTime;
+        user.time = user.time - leaveTime * 3600;
+        user.save()
+        res.redirect('/user')
       })
       .catch(err => console.log(err));
   }
