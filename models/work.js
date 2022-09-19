@@ -9,9 +9,8 @@ const workSchema = new Schema({
     workTime: { type: String, required: true }, 
     overTime: { type: String, required: false }, 
     totalWorkTime: { type: String, required: true }, 
-    position: { type: Number, required: true }, 
+    position: { type: String, required: true }, 
     leaveTime: { type: String, required: true }, 
-    position: { type: Number, required: true }, 
     userId: {
       type: Schema.Types.ObjectId,
       ref: 'User',

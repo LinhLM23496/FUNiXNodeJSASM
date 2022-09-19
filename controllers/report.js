@@ -72,8 +72,7 @@ exports.postReportSalary = (req, res, next) => {
 exports.getReportDaily = (req, res, next) => {
     // Lấy ngày giờ hiện tại
     const today = new Date();
-    
-    const formatDate = moment(today).format('DD/MM/YYYY')
+    const formatDate = moment(today).format('DD/MM/YYYY');
     Promise.all([Work.find({ date: formatDate }),Leave.find({ leaveDate: formatDate })]) 
         .then(result => {
             const [work, leave] = result;
@@ -85,6 +84,43 @@ exports.getReportDaily = (req, res, next) => {
         res.render('report/daily', {
             prods: work,
             date: formatDate,
+            timeLeave: timeLeave,
+            lastTotalTime: lastTotalTime,
+            pageTitle: 'Report Daily',
+            path: '/report/daily'
+        });
+    })
+    .catch(err => console.log(err));
+};
+
+exports.postReportDaily = (req, res, next) => {
+    // Lấy ngày giờ hiện tại
+    const today = new Date();
+    const formatDate = moment(today).format('DD/MM/YYYY');
+
+    // Lấy data input search và lọc nó vs DB Work
+    let search = req.body.search;
+    let workSearch = Work.find({ "position": { '$regex': search } });
+
+    // Lấy ngày giờ từ input
+    let date = "";
+    if (req.body.dateDaily) {
+        date = moment(req.body.dateDaily).format('DD/MM/YYYY');
+    } else {
+        date = formatDate;
+    }
+    
+    Promise.all([workSearch.find({ date: date }),Leave.find({ leaveDate: date })]) 
+        .then(result => {
+            const [work, leave] = result;
+            let lastTotalTime = work[work.length - 1]?.totalWorkTime
+            let timeLeave = 0;
+            leave.map(leave => {
+                timeLeave += leave.leaveTime;
+            })
+        res.render('report/daily', {
+            prods: work,
+            date: date,
             timeLeave: timeLeave,
             lastTotalTime: lastTotalTime,
             pageTitle: 'Report Daily',

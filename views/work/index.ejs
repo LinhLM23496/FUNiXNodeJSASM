@@ -13,24 +13,24 @@
                     <p>Bộ phận: <%= user.department %></p>
                     <label for="liveWork">Nơi làm việc</label>
                     <select class="form-control" id="liveWork" name="liveWork">
-                        <option value="1">Công ty</option>
-                        <option value="2">Nhà</option>
-                        <option value="3">Khách hàng</option>
+                        <option value="Công ty">Công ty</option>
+                        <option value="Nhà">Nhà</option>
+                        <option value="Khách hàng">Khách hàng</option>
                     </select>
                 </div>
                 <button type="submit" class="btn-shimmer btn-circle btn-danger mt-5">Điểm danh vào làm</button>
             </form>
             <% } else { %>
-                <form  class="" action="/report/daily" method="POST">
+                <form  class="" action="/" method="POST">
                     <input type="hidden" value="<%= work._id %>" name="workId">
                     <div class="">
                         <h3>Tên: <%= user.name %></h3>
                         <p>Bộ phận: <%= user.department %></p>
                         <label for="liveWork">Nơi làm việc</label>
                         <h4><i class="bi bi-caret-right-fill"></i><% 
-                            if (work.position === 1) { %>Công ty<% } 
-                            if (work.position === 2) { %>Nhà<% }  
-                            if (work.position === 3) { %>Khách hàng<% } 
+                            if (work.position === "Công ty") { %>Công ty<% } 
+                            if (work.position === "Nhà") { %>Nhà<% }  
+                            if (work.position === "Khách hàng") { %>Khách hàng<% } 
                         %></h4>
                     </div>
                     <button type="submit" class="btn-shimmer btn-circle btn-danger mt-5">Điểm danh ra về</button>

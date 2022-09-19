@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/controllers/work.js"
+            "program": "${workspaceFolder}/controllers/report.js"
         }
     ]
 }

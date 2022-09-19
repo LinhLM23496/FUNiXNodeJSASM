@@ -24,4 +24,11 @@ th {
 .btn-submit {
     border-radius: 10px;
     padding: 0 16px;
+    height: 36px;
+    min-width: 150px;
+}
+
+.report-input {
+    display: flex;
+    align-items: center;
 }

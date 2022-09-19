@@ -8,9 +8,9 @@ const router = express.Router();
 
 router.get('/', workController.getIndex);
 
-router.post('/report/daily', workController.postIndex);
+router.post('/', workController.postWorkEnd);
 
-router.post('/work-end', workController.postWorkEnd);
+router.post('/work-end', workController.postIndex);
 
 router.get('/checkleave', workController.getCheckLeave);
 

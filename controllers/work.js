@@ -26,7 +26,7 @@ exports.getIndex = (req, res, next) => {
 };
 
 // CHECK OUT
-exports.postIndex = (req, res, next) => {
+exports.postWorkEnd = (req, res, next) => {
   let totalTime = 0;
   let overTime = 0;
   // Lấy ngày giờ hiện tại
@@ -65,15 +65,20 @@ exports.postIndex = (req, res, next) => {
           work.workTime = moment.utc(time * 1000).format('HH:mm:ss');
           total = time + totalTime;
           work.totalWorkTime = moment.utc(total * 1000).format('HH:mm:ss');
-          return work.save();
-        })
-      res.redirect(301, '/report/daily')
-    })
+          work.save();
+          res.render('work/index', {
+            user: user,
+            work: work,
+            pageTitle: 'Works Start',
+            path: '/'
+          });
+        });
+      })
     .catch(err => console.log(err));
 };
 
 // CHECK IN
-exports.postWorkEnd = (req, res, next) => {
+exports.postIndex = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
   // format ngày tháng năm & giờ phút giây

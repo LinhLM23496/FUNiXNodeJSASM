@@ -12,4 +12,6 @@ router.post('/salary', reportController.postReportSalary);
 
 router.get('/daily', reportController.getReportDaily);
 
+router.post('/daily', reportController.postReportDaily);
+
 module.exports = router;

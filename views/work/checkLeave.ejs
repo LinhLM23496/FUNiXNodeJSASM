@@ -1,21 +1,20 @@
 <%- include('../includes/head.ejs') %>
-    <link rel="stylesheet" href="/public/css/works.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/report.css">
 </head>
 
 <body>
     <%- include('../includes/navigation.ejs') %>
     <main>
         <% if(user.annualLeave > 0) { %> 
-            <div class="grid mt-5">
-                <article class="mx-auto">
-                    <form class="mt-5" action="/leaveday" method="POST">
-                        <label for="checkLeave"><input type="radio" id="checkLeave" name="checkLeave" value="1"/> Một ngày</label>
-                        </br>
-                        <label for="checkManyLeave"><input type="radio" id="checkManyLeave" name="checkLeave" value="2"/> Nhiều ngày</label>
-                        </br>
-                        <button type="submit" class="btn-primary" >Chọn</button>
-                    </form>
-                </article>
+            <div class="grid">
+                <form class="mt-5" action="/leaveday" method="POST">
+                    <label for="checkLeave"><input type="radio" id="checkLeave" name="checkLeave" value="1"/> Một ngày</label>
+                    </br>
+                    <label for="checkManyLeave"><input type="radio" id="checkManyLeave" name="checkLeave" value="2"/> Nhiều ngày</label>
+                    </br>
+                    <button type="submit" class="btn-submit btn-primary" >Chọn</button>
+                </form>
             </div>
             <% } else {%>
             <h3>Bạn không đủ ngày phép</h3>
