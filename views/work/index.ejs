@@ -7,7 +7,7 @@
     <main>
         <div class="formCenter mt-3">
             <% if(!user.statusWork) { %> 
-            <form  class="" action="/work-end" method="POST">
+            <form  class="" action="/postWorkstart" method="POST">
                 <div class="">
                     <h3>Tên: <%= user.name %></h3>
                     <p>Bộ phận: <%= user.department %></p>
@@ -21,7 +21,7 @@
                 <button type="submit" class="btn-shimmer btn-circle btn-danger mt-5">Điểm danh vào làm</button>
             </form>
             <% } else { %>
-                <form  class="" action="/" method="POST">
+                <form  class="" action="/postWorkend" method="POST">
                     <input type="hidden" value="<%= work._id %>" name="workId">
                     <div class="">
                         <h3>Tên: <%= user.name %></h3>

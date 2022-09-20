@@ -1,28 +1,70 @@
-const moment = require('moment')
-const Work = require('../models/work');
-const User = require('../models/user');
-const Leave = require('../models/leave');
+const moment = require("moment");
+const Work = require("../models/work");
+const User = require("../models/user");
+const Leave = require("../models/leave");
 
+// GET trang index
 exports.getIndex = (req, res, next) => {
   Promise.all([User.findOne(), Work.findOne()])
-    .then(result => {
+    .then((result) => {
       const [user, work] = result;
       if (!user.statusWork) {
-        res.render('work/index', {
+        res.render("work/index", {
           user: user,
-          pageTitle: 'Works Start',
-          path: '/'
+          pageTitle: "Works Start",
+          path: "/",
         });
       } else {
-        res.render('work/index', {
+        res.render("work/index", {
           user: user,
           work: work,
-          pageTitle: 'Works End',
-          path: '/'
+          pageTitle: "Works End",
+          path: "/",
         });
       }
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
+};
+
+// CHECK IN
+exports.postWorkstart = (req, res, next) => {
+  // Lấy ngày giờ hiện tại
+  const today = new Date();
+  // format ngày tháng năm & giờ phút giây
+  const formatDate = moment(today).format("DD/MM/YYYY");
+  const hours = moment(today).format("HH:mm:ss");
+
+  //lấy vị trí làm việc
+  const position = req.body.liveWork;
+
+  Promise.all([User.findOne(), Work.findOne()])
+    .then((result) => {
+      const [user, work] = result;
+      // tạo giờ làm việc mới
+      const workNew = new Work({
+        start: hours,
+        end: 0,
+        date: formatDate,
+        workTime: 0,
+        totalWorkTime: 0,
+        position: position,
+        leaveTime: 0,
+        overTime: 0,
+        userId: req.user,
+      });
+      user.statusWork = true;
+      user.workId = workNew._id;
+      user.save();
+      workNew.save().then((work) => {
+        res.render("work/index", {
+          pageTitle: "Works End",
+          path: "/",
+          work: work,
+          user: user,
+        });
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 // CHECK OUT
@@ -32,18 +74,18 @@ exports.postWorkEnd = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
   // format ngày tháng năm & giờ phút giây
-  const formatDate = moment(today).format('DD/MM/YYYY')
-  const hours = moment(today).format('HH:mm:ss');
-  const formatHoursToSeconds = moment.duration(hours).asSeconds()
+  const formatDate = moment(today).format("DD/MM/YYYY");
+  const hours = moment(today).format("HH:mm:ss");
+  const formatHoursToSeconds = moment.duration(hours).asSeconds();
   Promise.all([User.findOne(), Work.find({ date: formatDate })])
-    .then(result => {
+    .then((result) => {
       const [user1, workDate] = result;
-      // tính tổng thời gian làm việc trong ngày mỗi khi check out 
-      workDate.map(r => {
-        totalTime += moment.duration(r.workTime).asSeconds()
-      })
-      Promise.all([User.findOne(), Work.findById(user1.workId)])
-        .then(result => {
+      // tính tổng thời gian làm việc trong ngày mỗi khi check out
+      workDate.map((r) => {
+        totalTime += moment.duration(r.workTime).asSeconds();
+      });
+      Promise.all([User.findOne(), Work.findById(user1.workId)]).then(
+        (result) => {
           const [user, work] = result;
           let total = 0;
           let workStartToSecond = moment.duration(work.start).asSeconds();
@@ -61,134 +103,89 @@ exports.postWorkEnd = (req, res, next) => {
           user.time = user.time - time;
           user.save();
           work.end = hours;
-          work.overTime = moment.utc(overTime * 1000).format('HH:mm:ss');
-          work.workTime = moment.utc(time * 1000).format('HH:mm:ss');
+          work.overTime = moment.utc(overTime * 1000).format("HH:mm:ss");
+          work.workTime = moment.utc(time * 1000).format("HH:mm:ss");
           total = time + totalTime;
-          work.totalWorkTime = moment.utc(total * 1000).format('HH:mm:ss');
+          work.totalWorkTime = moment.utc(total * 1000).format("HH:mm:ss");
           work.save();
-          res.render('work/index', {
-            user: user,
-            work: work,
-            pageTitle: 'Works Start',
-            path: '/'
-          });
-        });
-      })
-    .catch(err => console.log(err));
-};
-
-// CHECK IN
-exports.postIndex = (req, res, next) => {
-  // Lấy ngày giờ hiện tại
-  const today = new Date();
-  // format ngày tháng năm & giờ phút giây
-  const formatDate = moment(today).format('DD/MM/YYYY')
-  const hours = moment(today).format('HH:mm:ss');
-
-  //lấy vị trí làm việc
-  const position = req.body.liveWork;
-
-  Promise.all([User.findOne(), Work.findOne()])
-    .then(result => {
-      const [user, work] = result;
-      // tạo giờ làm việc mới
-      const workNew = new Work({
-        start: hours,
-        end: 0,
-        date: formatDate,
-        workTime: 0,
-        totalWorkTime: 0,
-        position: position,
-        leaveTime: 0,
-        overTime: 0,
-        userId: req.user,
-      })
-      user.statusWork = true;
-      user.workId = workNew._id;
-      user.save();
-      workNew
-        .save()
-        .then(work => {
-          res.render('work/index', {
-            pageTitle: 'Works End',
-            path: '/',
-            work: work,
-            user: user,
-          });
-        })
+          res.redirect("/report/daily");
+        }
+      );
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
 };
 
-// get data check Nghỉ phép
+// get page số ngày nghỉ phép
 exports.getCheckLeave = (req, res, next) => {
+  const checkLeave = 0;
   User.findOne()
-    .then(user => {
-      res.render('work/checkLeave', {
-        user: user,
-        pageTitle: 'Check Leave Day',
-        path: '/checkleave'
-      });
-    })
-    .catch(err => console.log(err));
-};
-
-// post data check Nghỉ phép
-exports.postLeaveDay = (req, res, next) => {
-  let checkLeave = req.body.checkLeave;
-  User.findOne()
-    .then(user => {
-      res.render('work/leaveDay', {
+    .then((user) => {
+      res.render("work/checkLeave", {
         user: user,
         checkLeave: checkLeave,
-        pageTitle: 'Leave Day',
-        path: '/leaveday'
+        pageTitle: "Số ngày nghỉ",
+        path: "/checkleave",
       });
     })
-    .catch(err => console.log(err));
+    .catch((err) => console.log(err));
+};
+
+// post data check số ngày nghỉ phép
+exports.postCheckLeave = (req, res, next) => {
+  const checkLeave = req.body.checkLeave;
+  User.findOne()
+    .then((user) => {
+      res.render("work/checkLeave", {
+        user: user,
+        checkLeave: checkLeave,
+        pageTitle: "Leave Day",
+        path: "/checkleave",
+      });
+    })
+    .catch((err) => console.log(err));
 };
 
 // post data Nghỉ phép
-exports.postCheckLeave = (req, res, next) => {
+exports.postLeaveDay = (req, res, next) => {
   // lấy ngày nghỉ
   let leaveDate = req.body.leaveDate;
   let leaveFromDate = req.body.leaveFromDate;
   let leaveToDate = req.body.leaveToDate;
   let reason = req.body.reason;
   if (leaveDate) {
-    leaveDate = moment(leaveDate).format('DD/MM/YYYY')
+    leaveDate = moment(leaveDate).format("DD/MM/YYYY");
     // lấy thời gian nghỉ và kiểm tra xem có null không ?
     let leaveTime = 0;
     if (req.body.leaveTime) {
       leaveTime = req.body.leaveTime;
     } else {
-      res.redirect('/leaveday')
+      res.redirect("/checkleave");
     }
     const leave = new Leave({
       leaveDate: leaveDate,
       leaveTime: leaveTime,
       reason: reason,
       userId: req.user,
-    })
+    });
     leave.save();
     User.findOne()
-      .then(user => {
+      .then((user) => {
         // tính thời gian nghỉ phép còn lại
         user.annualLeave = user.annualLeave - leaveTime;
         user.time = user.time - leaveTime * 3600;
-        user.save()
-        res.redirect('/user')
+        user.save();
+        res.redirect("/user");
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   } else if (leaveFromDate) {
-    leaveFromDate = moment(leaveFromDate).format('DD/MM/YYYY')
-    leaveToDate = moment(leaveToDate).format('DD/MM/YYYY')
+    leaveFromDate = moment(leaveFromDate).format("DD/MM/YYYY");
+    leaveToDate = moment(leaveToDate).format("DD/MM/YYYY");
     // lấy thời gian nghỉ và kiểm tra xem có null không ?
     let leaveTime = 0;
     if (req.body.leaveTime) {
       leaveTime = req.body.leaveTime;
     } else {
-      res.redirect('/leaveday')
+      res.redirect("/checkleave");
     }
     const leave = new Leave({
       leaveDate: leaveFromDate,
@@ -197,16 +194,18 @@ exports.postCheckLeave = (req, res, next) => {
       leaveTime: leaveTime,
       reason: reason,
       userId: req.user,
-    })
+    });
     leave.save();
     User.findOne()
-      .then(user => {
+      .then((user) => {
         // tính thời gian nghỉ phép còn lại
         user.annualLeave = user.annualLeave - leaveTime;
         user.time = user.time - leaveTime * 3600;
-        user.save()
-        res.redirect('/user')
+        user.save();
+        res.redirect("/user");
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
+  } else {
+    res.redirect("/checkleave");
   }
 };

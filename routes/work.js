@@ -1,21 +1,23 @@
-const path = require('path');
+const path = require("path");
 
-const express = require('express');
+const express = require("express");
 
-const workController = require('../controllers/work');
+const workController = require("../controllers/work");
 
 const router = express.Router();
 
-router.get('/', workController.getIndex);
+router.get("/", workController.getIndex);
 
-router.post('/', workController.postWorkEnd);
+router.post("/postWorkend", workController.postWorkEnd);
 
-router.post('/work-end', workController.postIndex);
+router.post("/postWorkstart", workController.postWorkstart);
 
-router.get('/checkleave', workController.getCheckLeave);
+// check số ngày
+router.get("/checkleave", workController.getCheckLeave);
 
-router.post('/checkleave', workController.postCheckLeave);
+router.post("/postCheckLeave", workController.postCheckLeave);
 
-router.post('/leaveday', workController.postLeaveDay);
+// action form nghỉ phép
+router.post("/postLeaveDay", workController.postLeaveDay);
 
 module.exports = router;

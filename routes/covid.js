@@ -1,19 +1,18 @@
-const path = require('path');
+const path = require("path");
 
-const express = require('express');
+const express = require("express");
 
-const reportController = require('../controllers/covid');
+const reportController = require("../controllers/covid");
 
 const router = express.Router();
 
-router.get('/temperature', reportController.getTemperature);
+router.get("/temperature", reportController.getTemperature);
+router.post("/temperature", reportController.postTemperature);
 
-router.get('/positive', reportController.getPositive);
+router.get("/positive", reportController.getPositive);
+router.post("/positive", reportController.postPositive);
 
-router.post('/positive', reportController.postPositive);
-
-router.get('/vacxin', reportController.getVacxin);
-
-router.post('/vacxin', reportController.postVacxin);
+router.get("/vacxin", reportController.getVacxin);
+router.post("/vacxin", reportController.postVacxin);
 
 module.exports = router;
