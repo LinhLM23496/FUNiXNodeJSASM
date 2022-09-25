@@ -10,7 +10,9 @@
             <form action="/report/daily" method="post">
                 <input type="text" name="search" class="btn-submit" id="search" placeholder="Nơi làm việc">
                 <input type="date" name="dateDaily" class="btn-submit" id="dateDaily">
-                <button type="submit" class="btn-submit btn-shimmer btn-info"><i class="bi bi-search-heart"></i>Tìm kiếm</button>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="hidden" value="<%= user._id %>" name="userId">
+                <button type="submit" class="btn-submit btn-shimmer btn-info"><i class="bi bi-search-heart"></i> Tìm kiếm</button>
             </form>
             <details class="formCenter mt-3">
                 <summary>Hướng dẫn</summary>
@@ -55,7 +57,7 @@
                 <% } %>
             </table>
             <% } else { %>
-                <h1>No Products Found!</h1>  
+                <h1 class="centered mt-5">Bạn chưa làm việc!</h1>  
                 <% } %>
     </main>
 <%- include('../includes/end.ejs') %></body>

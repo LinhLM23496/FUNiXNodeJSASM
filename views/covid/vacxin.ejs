@@ -37,6 +37,8 @@
                         <input type="date" id="timeVacxin2" name="timeVacxin2" />
                     </label>
                 </article>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" value="<%= user._id %>" name="userId">
                     <button type="submit" class="btn btn-shimmer btn-primary mt-2">Cập nhật thông tin</button>
             </form>
         </div>

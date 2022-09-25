@@ -4,15 +4,17 @@ const express = require("express");
 
 const reportController = require("../controllers/covid");
 
+const isAuth = require("../middleware/is-auth");
+
 const router = express.Router();
 
-router.get("/temperature", reportController.getTemperature);
-router.post("/temperature", reportController.postTemperature);
+router.get("/temperature", isAuth, reportController.getTemperature);
+router.post("/temperature", isAuth, reportController.postTemperature);
 
-router.get("/positive", reportController.getPositive);
-router.post("/positive", reportController.postPositive);
+router.get("/positive", isAuth, reportController.getPositive);
+router.post("/positive", isAuth, reportController.postPositive);
 
-router.get("/vacxin", reportController.getVacxin);
-router.post("/vacxin", reportController.postVacxin);
+router.get("/vacxin", isAuth, reportController.getVacxin);
+router.post("/vacxin", isAuth, reportController.postVacxin);
 
 module.exports = router;

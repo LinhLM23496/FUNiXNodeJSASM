@@ -19,6 +19,8 @@
                         <option value="true">Dương tính</option>
                         <option value="false">Âm tính</option>
                     </select>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" value="<%= user._id %>" name="userId">
                     <button type="submit" class="btn btn-shimmer btn-primary mt-5">Cập nhật thông tin</button>
                 </form>
             </article>

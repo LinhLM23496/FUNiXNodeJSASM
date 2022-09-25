@@ -7,7 +7,8 @@ exports.getTemperature = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
   const formatDateTime = moment(today).format("DD/MM/YYYY - HH:mm:ss");
-  User.findOne()
+  req.user
+    .populate("_id")
     .then((user) => {
       res.render("covid/temperature", {
         user: user,
@@ -20,6 +21,7 @@ exports.getTemperature = (req, res, next) => {
 };
 
 exports.postTemperature = (req, res, next) => {
+  const userId = req.body.userId;
   // Lấy ngày giờ hiện tại
   const today = new Date();
   const formatDate = moment(today).format("DD/MM/YYYY");
@@ -28,7 +30,7 @@ exports.postTemperature = (req, res, next) => {
   let temperature = req.body.temperature;
   let temperatureDate = formatDate;
   let temperatureTime = formatTime;
-  Covid.find({ date: temperatureDate })
+  Covid.find({ date: temperatureDate, userId: userId })
     .then((covid) => {
       if (covid.length === 0) {
         const covid = new Covid({
@@ -54,7 +56,8 @@ exports.postTemperature = (req, res, next) => {
 
 // page Báo nhiễm
 exports.getPositive = (req, res, next) => {
-  User.findOne()
+  req.user
+    .populate("_id")
     .then((user) => {
       res.render("covid/positive", {
         user: user,
@@ -66,20 +69,25 @@ exports.getPositive = (req, res, next) => {
 };
 
 exports.postPositive = (req, res, next) => {
+  const userId = req.body.userId;
+  let statusCovid = req.body.statusCovid;
   // Lấy ngày giờ hiện tại
   const today = new Date();
   const formatDate = moment(today).format("DD/MM/YYYY");
   //action page Báo nhiễm
-  let statusCovid = req.body.statusCovid;
   let date = "";
+
   if (req.body.date) {
     date = moment(req.body.date).format("DD/MM/YYYY");
   } else {
     date = formatDate;
   }
-  Promise.all([Covid.find({ date: formatDate }), User.findOne()])
+  Promise.all([
+    User.findById(userId),
+    Covid.find({ date: formatDate, userId: userId }),
+  ])
     .then((result) => {
-      const [covid, user] = result;
+      const [user, covid] = result;
       user.statusCovid = statusCovid;
       user.save();
       if (covid.length === 0) {
@@ -105,7 +113,8 @@ exports.postPositive = (req, res, next) => {
 };
 
 exports.getVacxin = (req, res, next) => {
-  User.find()
+  req.user
+    .populate("_id")
     .then((user) => {
       res.render("covid/vacxin", {
         user: user,
@@ -117,6 +126,7 @@ exports.getVacxin = (req, res, next) => {
 };
 
 exports.postVacxin = (req, res, next) => {
+  const userId = req.body.userId;
   // Lấy ngày giờ hiện tại
   const today = new Date();
   const formatDate = moment(today).format("DD/MM/YYYY");
@@ -146,7 +156,7 @@ exports.postVacxin = (req, res, next) => {
   let timeVacxin2 = req.body.timeVacxin2
     ? moment(req.body.timeVacxin2).format("DD/MM/YYYY")
     : formatDate;
-  User.findOne()
+  User.findById(userId)
     .then((user) => {
       user.vacxin1 = addressVacxin1;
       user.dateV1 = timeVacxin1;

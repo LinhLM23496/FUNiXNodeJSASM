@@ -10,6 +10,8 @@
             <article class="card__content">
                 <form action="/report/salary" method="POST">
                     <input type="month" name="month" id="month">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" value="<%= user._id %>" name="userId">
                     <button type="submit" class="btn-submit btn-shimmer btn-info">Chọn</button>
                 </form>
                 <% if (haveWork) { %>

@@ -1,29 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  name: { type: String, required: true },
   email: { type: String, required: true },
-  department: { type: String, required: true },
-  Dob: { type: String, required: true },
-  salaryScale: { type: Number, required: true },
-  startDate: { type: String, required: true },
-  annualLeave: { type: Number, required: true },
-  time: { type: Number, required: true },
-  statusWork: { type: Boolean, required: true },
+  password: { type: String, required: true },
+  name: { type: String, required: false },
+  department: { type: String, required: false },
+  Dob: { type: String, required: false },
+  salaryScale: { type: Number, required: false },
+  startDate: { type: String, required: false },
+  annualLeave: { type: Number, required: false },
+  time: { type: Number, required: false },
+  statusWork: { type: Boolean, required: false },
   vacxin1: { type: String, required: false },
   dateV1: { type: String, required: false },
   vacxin2: { type: String, required: false },
   dateV2: { type: String, required: false },
-  statusCovid: { type: Boolean, required: true },
+  statusCovid: { type: Boolean, required: false },
   workId: {
     type: Schema.Types.ObjectId,
-    ref: 'Work',
-    required: false
+    ref: "Work",
+    required: false,
   },
-  imageUrl: { type: String, required: true },
+  imageUrl: { type: String, required: false },
 });
 
-
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

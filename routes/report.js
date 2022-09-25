@@ -4,14 +4,16 @@ const express = require("express");
 
 const reportController = require("../controllers/report");
 
+const isAuth = require("../middleware/is-auth");
+
 const router = express.Router();
 
-router.get("/salary", reportController.getReportSalary);
+router.get("/salary", isAuth, reportController.getReportSalary);
 
-router.post("/salary", reportController.postReportSalary);
+router.post("/salary", isAuth, reportController.postReportSalary);
 
-router.get("/daily", reportController.getReportDaily);
+router.get("/daily", isAuth, reportController.getReportDaily);
 
-router.post("/daily", reportController.postReportDaily);
+router.post("/daily", isAuth, reportController.postReportDaily);
 
 module.exports = router;

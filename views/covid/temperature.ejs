@@ -18,6 +18,8 @@
                         <input type="number" id="temperature" name="temperature" min="0.0" max="100.0" value="36"  step="0.1"/> 
                         độ C
                     </h5>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" value="<%= user._id %>" name="userId">
                     <button type="submit" class="btn btn-shimmer btn-primary mt-5">Cập nhật thông tin</button>
                 </form>
             </article>

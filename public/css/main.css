@@ -1,15 +1,13 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
 
 * {
   box-sizing: border-box;
 }
 
-
-
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 main {
@@ -27,10 +25,10 @@ form {
 }
 
 .grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: stretch;
 }
 
 .formCenter {
@@ -46,10 +44,9 @@ form {
   max-width: 95%;
   margin: 1rem;
   padding: 1rem;
-
 }
 
-.card-image img{
+.card-image img {
   width: 100%;
   border-radius: 20px;
 }
@@ -68,10 +65,15 @@ form {
 }
 
 .btn-shimmer {
-  background-image: linear-gradient(-60deg,
-      transparent, transparent 40%,
-      #ffffff 40%, #ffffff 60%,
-      transparent 60%, transparent 100%);
+  background-image: linear-gradient(
+    -60deg,
+    transparent,
+    transparent 40%,
+    #ffffff 40%,
+    #ffffff 60%,
+    transparent 60%,
+    transparent 100%
+  );
   background-size: 200% 100%;
   background-repeat: no-repeat;
   background-position-x: 150%;
@@ -83,10 +85,39 @@ form {
   transition: background-position-x 1000ms;
 }
 
-@media (max-width: 575.98px){
+.main-headernav {
+  /* display: inline; */
+  float: right;
+}
 
+.main-headernav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.main-headernav li {
+  float: left;
+}
+
+.main-headernav a {
+  color: #ffffff;
+}
+
+.main-headernav a:hover {
+  color: #000;
+}
+
+.main-nav-button {
+  background: transparent;
+  border: none;
+  text-decoration: none;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 575.98px) {
   body {
     font-size: 12px;
   }
-  
 }
