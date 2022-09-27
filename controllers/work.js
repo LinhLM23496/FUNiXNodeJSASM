@@ -1,4 +1,6 @@
+const { validationResult } = require("express-validator/check");
 const moment = require("moment");
+
 const Work = require("../models/work");
 const User = require("../models/user");
 const Leave = require("../models/leave");
@@ -118,21 +120,20 @@ exports.postWorkEnd = (req, res, next) => {
 
 // get page số ngày nghỉ phép
 exports.getCheckLeave = (req, res, next) => {
-  let message = req.flash("error");
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
-  let checkLeave = 0;
-
   req.user
     .populate("_id")
     .then((user) => {
       res.render("work/checkLeave", {
         user: user,
-        checkLeave: checkLeave,
-        errorMessage: message,
+        checkLeave: 0,
+        errorMessage: "",
+        oldInput: {
+          leaveDate: "",
+          leaveTime: 0,
+          reason: "",
+          leaveFromDate: "",
+          leaveToDate: "",
+        },
         pageTitle: "Số ngày nghỉ",
         path: "/checkleave",
       });
@@ -142,12 +143,6 @@ exports.getCheckLeave = (req, res, next) => {
 
 // post data check số ngày nghỉ phép
 exports.postCheckLeave = (req, res, next) => {
-  let message = req.flash("error");
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
   const checkLeave = req.body.checkLeave;
   const userId = req.body.userId;
 
@@ -156,7 +151,14 @@ exports.postCheckLeave = (req, res, next) => {
       res.render("work/checkLeave", {
         user: user,
         checkLeave: checkLeave,
-        errorMessage: message,
+        errorMessage: "",
+        oldInput: {
+          leaveDate: "",
+          leaveTime: 0,
+          reason: "",
+          leaveFromDate: "",
+          leaveToDate: "",
+        },
         pageTitle: "Leave Day",
         path: "/checkleave",
       });
@@ -166,76 +168,145 @@ exports.postCheckLeave = (req, res, next) => {
 
 // post data Nghỉ phép
 exports.postLeaveDay = (req, res, next) => {
-  let message = req.flash("error");
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
   // lấy gía trị input
+  const errors = validationResult(req);
   const userId = req.body.userId;
+  let checkLeave = req.body.checkLeave;
+  let leaveTime = req.body.leaveTime;
   let leaveDate = req.body.leaveDate;
   let leaveFromDate = req.body.leaveFromDate;
   let leaveToDate = req.body.leaveToDate;
   let reason = req.body.reason;
 
-  if (leaveDate) {
-    leaveDate = moment(leaveDate).format("DD/MM/YYYY");
-    // lấy thời gian nghỉ và kiểm tra xem có null không ?
-    let leaveTime = 0;
-    if (req.body.leaveTime) {
-      leaveTime = req.body.leaveTime;
+  leaveDate = leaveDate ? moment(leaveDate).format("DD/MM/YYYY") : "0";
+  leaveFromDate = leaveFromDate
+    ? moment(leaveFromDate).format("DD/MM/YYYY")
+    : "0";
+  leaveToDate = leaveToDate ? moment(leaveToDate).format("DD/MM/YYYY") : "0";
+
+  if (checkLeave == 1) {
+    // kiểm tra input xem có null không ?
+    if (leaveDate === "0") {
+      User.findById(userId)
+        .then((user) => {
+          return res.status(422).render("work/checkLeave", {
+            user: user,
+            checkLeave: checkLeave,
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+              leaveDate: req.body.leaveDate,
+              leaveTime: leaveTime,
+              reason: reason,
+              leaveFromDate: "",
+              leaveToDate: "",
+            },
+            pageTitle: "Leave Day",
+            path: "/checkleave",
+          });
+        })
+        .catch((err) => console.log(err));
+    } else if (leaveTime <= 0) {
+      User.findById(userId)
+        .then((user) => {
+          return res.status(422).render("work/checkLeave", {
+            user: user,
+            checkLeave: checkLeave,
+            errorMessage: errors.array()[2].msg,
+            oldInput: {
+              leaveDate: req.body.leaveDate,
+              leaveTime: leaveTime,
+              reason: reason,
+              leaveFromDate: "",
+              leaveToDate: "",
+            },
+            pageTitle: "Leave Day",
+            path: "/checkleave",
+          });
+        })
+        .catch((err) => console.log(err));
     } else {
-      req.flash("error", "Hãy chọn ngày nghỉ!");
-      res.redirect("/checkleave");
+      const leave = new Leave({
+        leaveDate: leaveDate,
+        leaveTime: leaveTime,
+        reason: reason,
+        userId: userId,
+      });
+      leave.save();
+      User.findById(userId)
+        .then((user) => {
+          // tính thời gian nghỉ phép còn lại
+          user.annualLeave = user.annualLeave - leaveTime;
+          user.time = user.time - leaveTime * 3600;
+          user.save();
+          return res.redirect("/user");
+        })
+        .catch((err) => console.log(err));
     }
-    const leave = new Leave({
-      leaveDate: leaveDate,
-      leaveTime: leaveTime,
-      reason: reason,
-      userId: req.user,
-    });
-    leave.save();
-    User.findById(userId)
-      .then((user) => {
-        // tính thời gian nghỉ phép còn lại
-        user.annualLeave = user.annualLeave - leaveTime;
-        user.time = user.time - leaveTime * 3600;
-        user.save();
-        res.redirect("/user");
-      })
-      .catch((err) => console.log(err));
-  } else if (leaveFromDate) {
-    leaveFromDate = moment(leaveFromDate).format("DD/MM/YYYY");
-    leaveToDate = moment(leaveToDate).format("DD/MM/YYYY");
-    // lấy thời gian nghỉ và kiểm tra xem có null không ?
-    let leaveTime = 0;
-    if (req.body.leaveTime) {
-      leaveTime = req.body.leaveTime;
+  } else if (checkLeave == 2) {
+    // check nhập ngày từ và đến sai
+    if (
+      leaveFromDate === "0" ||
+      leaveToDate === "0" ||
+      leaveFromDate > leaveToDate
+    ) {
+      User.findById(userId)
+        .then((user) => {
+          return res.status(422).render("work/checkLeave", {
+            user: user,
+            checkLeave: checkLeave,
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+              leaveDate: leaveDate,
+              leaveTime: leaveTime,
+              reason: reason,
+              leaveFromDate: req.body.leaveFromDate,
+              leaveToDate: req.body.leaveToDate,
+            },
+            pageTitle: "Leave Day",
+            path: "/checkleave",
+          });
+        })
+        .catch((err) => console.log(err));
+    } else if (leaveTime <= 0) {
+      // check thời gian nghỉ phép
+      User.findById(userId)
+        .then((user) => {
+          console.log(errors.array());
+          return res.status(422).render("work/checkLeave", {
+            user: user,
+            checkLeave: checkLeave,
+            errorMessage: errors.array()[1].msg,
+            oldInput: {
+              leaveDate: leaveDate,
+              leaveTime: leaveTime,
+              reason: reason,
+              leaveFromDate: req.body.leaveFromDate,
+              leaveToDate: req.body.leaveToDate,
+            },
+            pageTitle: "Leave Day",
+            path: "/checkleave",
+          });
+        })
+        .catch((err) => console.log(err));
     } else {
-      req.flash("error", "Hãy chọn ngày nghỉ!");
-      res.redirect("/checkleave");
+      const leave = new Leave({
+        leaveDate: leaveFromDate,
+        leaveFromDate: leaveFromDate,
+        leaveToDate: leaveToDate,
+        leaveTime: leaveTime,
+        reason: reason,
+        userId: userId,
+      });
+      leave.save();
+      User.findById(userId)
+        .then((user) => {
+          // tính thời gian nghỉ phép còn lại
+          user.annualLeave = user.annualLeave - leaveTime;
+          user.time = user.time - leaveTime * 3600;
+          user.save();
+          res.redirect("/user");
+        })
+        .catch((err) => console.log(err));
     }
-    const leave = new Leave({
-      leaveDate: leaveFromDate,
-      leaveFromDate: leaveFromDate,
-      leaveToDate: leaveToDate,
-      leaveTime: leaveTime,
-      reason: reason,
-      userId: req.user,
-    });
-    leave.save();
-    User.findById(userId)
-      .then((user) => {
-        // tính thời gian nghỉ phép còn lại
-        user.annualLeave = user.annualLeave - leaveTime;
-        user.time = user.time - leaveTime * 3600;
-        user.save();
-        res.redirect("/user");
-      })
-      .catch((err) => console.log(err));
-  } else {
-    req.flash("error", "Hãy điền đầy đủ thông tin!");
-    res.redirect("/checkleave");
   }
 };

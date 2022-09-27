@@ -1,45 +1,53 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/main.css">
-<link rel="stylesheet" href="/css/works.css">
-</head>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/works.css">
+    </head>
 
-<body>
-    <%- include('../includes/navigation.ejs') %>
-        <div class="grid">
-            <form action="/covid/vacxin" method="post">
-                <article class="card">
-                    <label for="addressVacxin1">
-                        Mũi 1: 
-                    </label>
-                    <select class="form-control" id="addressVacxin1" name="addressVacxin1">
-                        <option value="1" selected>Sinopharm</option>
-                        <option value="2">Pfizer</option>
-                        <option value="3">Moderna</option>
-                        <option value="4">AstraZeneca</option>
-                    </select>
-                    <label class="mt-2" for="timeVacxin1">
-                        Ngày tiêm: 
-                        <input type="date" id="timeVacxin1" name="timeVacxin1" />
-                    </label>
-                </article>
-                <article class="card">
-                    <label for="addressVacxin2">
-                        Mũi 2: 
-                    </label>
-                    <select class="form-control" id="addressVacxin2" name="addressVacxin2">
-                        <option value="1" selected>Sinopharm</option>
-                        <option value="2">Pfizer</option>
-                        <option value="3">Moderna</option>
-                        <option value="4">AstraZeneca</option>
-                    </select>
-                    <label class="mt-2" for="timeVacxin2">
-                        Ngày tiêm: 
-                        <input type="date" id="timeVacxin2" name="timeVacxin2" />
-                    </label>
-                </article>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <div class="grid">
+                <form action="/covid/vacxin" method="post">
+                    <article class="card">
+                        <label for="addressVacxin1">
+                            Mũi 1:
+                        </label>
+                        <select class="form-control" id="addressVacxin1" name="addressVacxin1" value="1">
+                            <option value="Sinopharm" <% if (user.vacxin1==="Sinopharm" ) {%>selected<% } %> >Sinopharm
+                            </option>
+                            <option value="Pfizer" <% if (user.vacxin1==="Pfizer" ) {%>selected<% } %> >Pfizer
+                            </option>
+                            <option value="1" <% if (user.vacxin1==="Moderna" ) {%>selected<% } %> >Moderna</option>
+                            <option value="AstraZeneca" <% if (user.vacxin1==="AstraZeneca" ) {%>selected<% } %>
+                                    >AstraZeneca</option>
+                        </select>
+                        <label class="mt-2" for="timeVacxin1">
+                            Ngày tiêm:
+                            <input type="date" id="timeVacxin1" name="timeVacxin1" value="<%= user.dateV1 %>" />
+                        </label>
+                    </article>
+                    <article class="card">
+                        <label for="addressVacxin2">
+                            Mũi 2:
+                        </label>
+                        <select class="form-control" id="addressVacxin2" name="addressVacxin2">
+                            <option value="Sinopharm" <% if (user.vacxin2==="Sinopharm" ) {%>selected<% } %> >Sinopharm
+                            </option>
+                            <option value="Pfizer" <% if (user.vacxin2==="Pfizer" ) {%>selected<% } %> >Pfizer
+                            </option>
+                            <option value="Moderna" <% if (user.vacxin2==="Moderna" ) {%>selected<% } %> >Moderna
+                            </option>
+                            <option value="AstraZeneca" <% if (user.vacxin2==="AstraZeneca" ) {%>selected<% } %>
+                                    >AstraZeneca</option>
+                        </select>
+                        <label class="mt-2" for="timeVacxin2">
+                            Ngày tiêm:
+                            <input type="date" id="timeVacxin2" name="timeVacxin2" value="<%= user.dateV2 %>" />
+                        </label>
+                    </article>
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <input type="hidden" value="<%= user._id %>" name="userId">
                     <button type="submit" class="btn btn-shimmer btn-primary mt-2">Cập nhật thông tin</button>
-            </form>
-        </div>
-<%- include('../includes/end.ejs') %></body>
+                </form>
+            </div>
+            <%- include('../includes/end.ejs') %>
+    </body>

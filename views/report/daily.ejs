@@ -1,63 +1,67 @@
 <%- include('../includes/head.ejs') %>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/report.css">
-</head>
+    </head>
 
-<body>
-    <%- include('../includes/navigation.ejs') %>
-    <main>
-        <div class="report-input">
-            <form action="/report/daily" method="post">
-                <input type="text" name="search" class="btn-submit" id="search" placeholder="Nơi làm việc">
-                <input type="date" name="dateDaily" class="btn-submit" id="dateDaily">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <input type="hidden" value="<%= user._id %>" name="userId">
-                <button type="submit" class="btn-submit btn-shimmer btn-info"><i class="bi bi-search-heart"></i> Tìm kiếm</button>
-            </form>
-            <details class="formCenter mt-3">
-                <summary>Hướng dẫn</summary>
-                <p>Điền từ vào ô input để chọn nơi làm việc và có thể chọn ngày muốn xem. Ấn tìm kiếm.</p>
-            </details>
-        </div>
-        <% if (prods.length > 0) { %>
-            <div class="centered mt-5">
-                <h4>Ngày: <%= date %></h4>
-                <h4>Đăng ký giờ nghỉ: <%= timeLeave %></h4>
-                <h4>Tổng giờ đã làm: <%= lastTotalTime == 0 ? 'chưa kết thúc làm việc' : lastTotalTime %>  </h4>
-            </div>
-            <table class="table mt-5">
-                <tr>
-                    <th>Nơi làm việc</th>
-                    <th>Giờ vào</th>
-                    <th>Giờ ra</th>
-                    <th>Thực tế</th>
-                    <th>Tăng ca</th>
-                </tr>
-                <% for (let work of prods) { %>
-                    <tr>
-                        <td><% 
-                            if (work.position === "Công ty") { %>Công ty<% } 
-                            if (work.position === "Nhà") { %>Nhà<% }    
-                            if (work.position === "Khách hàng") { %>Khách hàng<% } 
-                            %>
-                        </td>
-                        <td>
-                            <%= work.start %>
-                        </td>
-                        <td>
-                            <%= work.end %>
-                        </td>
-                        <td>
-                            <%= work.workTime %>
-                        </td>
-                        <td>
-                            <%= work.overTime %>
-                        </td>
-                    </tr>
-                <% } %>
-            </table>
-            <% } else { %>
-                <h1 class="centered mt-5">Bạn chưa làm việc!</h1>  
-                <% } %>
-    </main>
-<%- include('../includes/end.ejs') %></body>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main class="report">
+                <div class="report-input">
+                    <form action="/report/daily" method="post">
+                        <input type="text" name="search" class="btn-submit" id="search" placeholder="Nơi làm việc"
+                            value=<%=search %>>
+                        <input type="date" name="dateDaily" class="btn-submit" id="dateDaily" value=<%=today %>>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" value="<%= user._id %>" name="userId">
+                        <button type="submit" class="btn-submit btn-shimmer btn-info"><i class="bi bi-search-heart"></i>
+                            Tìm kiếm</button>
+                    </form>
+                    <details class="formCenter mt-3">
+                        <summary>Hướng dẫn</summary>
+                        <p>Điền từ vào ô input để chọn nơi làm việc và có thể chọn ngày muốn xem. Ấn tìm kiếm.</p>
+                    </details>
+                </div>
+                <% if (prods.length> 0) { %>
+                    <div class="centered mt-5">
+                        <h4>Ngày: <%= date %>
+                        </h4>
+                        <h4>Đăng ký giờ nghỉ: <%= timeLeave %>
+                        </h4>
+                        <h4>Tổng giờ đã làm: <%= lastTotalTime==0 ? 'chưa kết thúc làm việc' : lastTotalTime %>
+                        </h4>
+                    </div>
+                    <table class="table mt-5">
+                        <tr>
+                            <th>Nơi làm việc</th>
+                            <th>Giờ vào</th>
+                            <th>Giờ ra</th>
+                            <th>Thực tế</th>
+                            <th>Tăng ca</th>
+                        </tr>
+                        <% for (let work of prods) { %>
+                            <tr>
+                                <td>
+                                    <% if (work.position==="Công ty" ) { %>Công ty<% } if (work.position==="Nhà" ) { %>
+                                            Nhà<% } if (work.position==="Khách hàng" ) { %>Khách hàng<% } %>
+                                </td>
+                                <td>
+                                    <%= work.start %>
+                                </td>
+                                <td>
+                                    <%= work.end %>
+                                </td>
+                                <td>
+                                    <%= work.workTime %>
+                                </td>
+                                <td>
+                                    <%= work.overTime %>
+                                </td>
+                            </tr>
+                            <% } %>
+                    </table>
+                    <% } else { %>
+                        <h1 class="centered mt-5">Bạn chưa làm việc!</h1>
+                        <% } %>
+            </main>
+            <%- include('../includes/end.ejs') %>
+    </body>

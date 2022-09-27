@@ -1,29 +1,29 @@
 <%- include('../includes/head.ejs') %>
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/works.css">
-</head>
+    </head>
 
-<body>
-    <%- include('../includes/navigation.ejs') %>
-        <div class="grid">
-            <article class="user-content">
-                <h2 class="mb-3 ml-4 user-name">
-                    <%= user.name %>
-                </h2>
-                <form action="/covid/positive" method="post">
-                    <label id="active">Ngày nhiễm: </label>
-                    <input type="date" id="date" name="date">
-                    </br>
-                    <label id="active">Thông báo: </label>
-                    <select class="form-control" id="statusCovid" name="statusCovid">
-                        <option value="true">Dương tính</option>
-                        <option value="false">Âm tính</option>
-                    </select>
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                    <input type="hidden" value="<%= user._id %>" name="userId">
-                    <button type="submit" class="btn btn-shimmer btn-primary mt-5">Cập nhật thông tin</button>
-                </form>
-            </article>
-        </div>
-    <%- include('../includes/end.ejs') %>
-</body>
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <div class="grid">
+                <article class="user-content">
+                    <h2 class="mb-3 ml-4 user-name">
+                        <%= user.name %>
+                    </h2>
+                    <form action="/covid/positive" method="post">
+                        <label id="active">Ngày nhiễm: </label>
+                        <input type="date" id="date" name="date" value="<%= today %>">
+                        </br>
+                        <label id="active">Thông báo: </label>
+                        <select class="form-control" id="statusCovid" name="statusCovid">
+                            <option value="true">Dương tính</option>
+                            <option value="false">Âm tính</option>
+                        </select>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" value="<%= user._id %>" name="userId">
+                        <button type="submit" class="btn btn-shimmer btn-primary mt-5">Cập nhật thông tin</button>
+                    </form>
+                </article>
+            </div>
+            <%- include('../includes/end.ejs') %>
+    </body>

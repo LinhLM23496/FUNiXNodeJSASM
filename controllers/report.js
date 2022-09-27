@@ -79,6 +79,7 @@ exports.getReportDaily = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
   const formatDate = moment(today).format("DD/MM/YYYY");
+  const formatDate2 = moment(today).format("YYYY-MM-DD");
 
   req.user
     .populate("_id")
@@ -98,6 +99,8 @@ exports.getReportDaily = (req, res, next) => {
             user: user,
             prods: work,
             date: formatDate,
+            today: formatDate2,
+            search: "",
             timeLeave: timeLeave,
             lastTotalTime: lastTotalTime,
             pageTitle: "Report Daily",
@@ -142,10 +145,13 @@ exports.postReportDaily = (req, res, next) => {
       leave.map((leave) => {
         timeLeave += leave.leaveTime;
       });
+      console.log(req.body.dateDaily);
       res.render("report/daily", {
         user: user,
         prods: work,
         date: date,
+        today: req.body.dateDaily,
+        search: search,
         timeLeave: timeLeave,
         lastTotalTime: lastTotalTime,
         pageTitle: "Report Daily",

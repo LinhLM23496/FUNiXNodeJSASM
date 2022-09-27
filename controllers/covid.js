@@ -56,11 +56,15 @@ exports.postTemperature = (req, res, next) => {
 
 // page Báo nhiễm
 exports.getPositive = (req, res, next) => {
+  // Lấy ngày giờ hiện tại
+  const today = new Date();
+  const formatDate2 = moment(today).format("YYYY-MM-DD");
   req.user
     .populate("_id")
     .then((user) => {
       res.render("covid/positive", {
         user: user,
+        today: formatDate2,
         pageTitle: "Covid Positive",
         path: "/covid/positive",
       });
@@ -96,6 +100,7 @@ exports.postPositive = (req, res, next) => {
           temperature: 0,
           positive: statusCovid,
           positiveDay: date,
+          today: req.body.date,
           userId: req.user,
         });
         covid.save();
@@ -126,35 +131,18 @@ exports.getVacxin = (req, res, next) => {
 };
 
 exports.postVacxin = (req, res, next) => {
-  const userId = req.body.userId;
   // Lấy ngày giờ hiện tại
   const today = new Date();
-  const formatDate = moment(today).format("DD/MM/YYYY");
-  const vacxin = (numberVacxin) => {
-    switch (numberVacxin) {
-      case "2":
-        return "Pfizer";
-        break;
-      case "3":
-        return "Moderna";
-        break;
+  const formatDate = moment(today).format("YYYY-MM-DD");
 
-      case "4":
-        return "AstraZeneca";
-        break;
-
-      default:
-        return "Sinopharm";
-        break;
-    }
-  };
-  let addressVacxin1 = vacxin(req.body.addressVacxin1);
+  const userId = req.body.userId;
+  let addressVacxin1 = req.body.addressVacxin1;
   let timeVacxin1 = req.body.timeVacxin1
-    ? moment(req.body.timeVacxin1).format("DD/MM/YYYY")
+    ? moment(req.body.timeVacxin1).format("YYYY-MM-DD")
     : formatDate;
-  let addressVacxin2 = vacxin(req.body.addressVacxin2);
+  let addressVacxin2 = req.body.addressVacxin2;
   let timeVacxin2 = req.body.timeVacxin2
-    ? moment(req.body.timeVacxin2).format("DD/MM/YYYY")
+    ? moment(req.body.timeVacxin2).format("YYYY-MM-DD")
     : formatDate;
   User.findById(userId)
     .then((user) => {
@@ -163,11 +151,7 @@ exports.postVacxin = (req, res, next) => {
       user.vacxin2 = addressVacxin2;
       user.dateV2 = timeVacxin2;
       user.save();
-      res.render("covid/vacxin", {
-        user: user,
-        pageTitle: "Covid Vacxin",
-        path: "/covid/vacxin",
-      });
+      return res.redirect("/covid/vacxin");
     })
     .catch((err) => console.log(err));
 };

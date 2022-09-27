@@ -13,13 +13,17 @@
                         <div class="box-login">
                             <form autocomplete="off" action="/login" method="POST">
                                 <h2>Sign in</h2>
-                                <div class="inputBox">
-                                    <input type="email" name="email" id="email" required="required">
+                                <div
+                                    class="inputBox <%= validationErrors.find(e => e.param === 'email') ? 'invalid' : '' %>">
+                                    <input type="text" name="email" id="email" required="required"
+                                        value="<%= oldInput.email %>">
                                     <span>E-mail</span>
                                     <i></i>
                                 </div>
-                                <div class="inputBox">
-                                    <input type="password" name="password" id="password" required="required">
+                                <div
+                                    class="inputBox <%= validationErrors.find(e => e.param === 'password') ? 'invalid' : '' %>">
+                                    <input type="password" name="password" id="password" required="required"
+                                        value="<%= oldInput.password %>">
                                     <span>Password</span>
                                     <i></i>
                                 </div>
