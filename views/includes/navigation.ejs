@@ -107,7 +107,32 @@
             <% } %>
           </div>
         </li>
-        <% } %>
+        <% if(isManage) { %>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle <%= path === '/manage/date' || path === '/manage/month' ? 'active' : '' %>"
+            id="navbarDropdown"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            QUẢN LÝ
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a
+              class="dropdown-item <%= path === '/manage/date' ? 'active' : '' %>"
+              href="/manage/date"
+              >THÔNG TIN NGÀY</a
+            >
+            <a
+              class="dropdown-item <%= path === '/manage/month' ? 'active' : '' %>"
+              href="/manage/month"
+              >HÔNG TIN THÁNG</a
+            >
+          </div>
+        </li>
+        <% } %> <% } %>
       </ul>
     </div>
     <div class="main-headernav">

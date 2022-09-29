@@ -27,7 +27,7 @@
                         </h4>
                         <h4>Đăng ký giờ nghỉ: <%= timeLeave %> giờ
                         </h4>
-                        <h4>Tổng giờ đã làm: <%= lastTotalTime==0 ? 'chưa kết thúc làm việc' : lastTotalTime %>
+                        <h4>Tổng giờ đã làm: <%= user.statusWork ? 'chưa kết thúc làm việc' : lastTotalTime %>
                         </h4>
                     </div>
                     <table class="table mt-5">

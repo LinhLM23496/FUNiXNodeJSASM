@@ -52,7 +52,6 @@ exports.postWorkstart = (req, res, next) => {
         end: 0,
         date: formatDate,
         workTime: 0,
-        totalWorkTime: 0,
         position: position,
         leaveTime: 0,
         overTime: 0,
@@ -96,14 +95,12 @@ exports.postWorkEnd = (req, res, next) => {
     let total = 0;
     let workStartToSecond = moment.duration(work.start).asSeconds();
     //tính thời gian làm việc - nếu điểm danh qua này mới thì mất ngày làm việc
-    const time = 0;
+    let time = 0;
     if (formatHoursToSeconds > workStartToSecond) {
       time = formatHoursToSeconds - workStartToSecond;
-    } else {
-      time = 0;
     }
     // tính thời gian tăng ca sau sau 8h làm việc | 28800 là 8h làm việc
-    if (time > 0) {
+    if (time > 28800) {
       overTime = time - 28800;
     } else {
       overTime = 0;
@@ -115,8 +112,6 @@ exports.postWorkEnd = (req, res, next) => {
     work.end = hours;
     work.overTime = moment.utc(overTime * 1000).format("HH:mm:ss");
     work.workTime = moment.utc(time * 1000).format("HH:mm:ss");
-    total = time + totalTime;
-    work.totalWorkTime = moment.utc(total * 1000).format("HH:mm:ss");
     work.save();
     res.redirect("/report/daily");
   });

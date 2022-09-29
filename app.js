@@ -53,6 +53,7 @@ const workRoutes = require("./routes/work");
 const reportRoutes = require("./routes/report");
 const covidRoutes = require("./routes/covid");
 const authRoutes = require("./routes/auth");
+const manageRoutes = require("./routes/manage");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
@@ -100,20 +101,21 @@ app.use(workRoutes);
 app.use("/report", reportRoutes);
 app.use("/covid", covidRoutes);
 app.use(authRoutes);
+app.use("/manage", manageRoutes);
 
-app.get("/500", errorController.get500);
+// app.get("/500", errorController.get500);
 
 app.use(errorController.get404);
 
-app.use((error, req, res, next) => {
-  // res.status(error.httpStatusCode).render(...);
-  res.redirect("/500");
-  // res.status(500).render("500", {
-  //   pageTitle: "Error!",
-  //   path: "/500",
-  //   isAuthenticated: req.session.isLoggedIn,
-  // });
-});
+// app.use((error, req, res, next) => {
+// res.status(error.httpStatusCode).render(...);
+// res.redirect("/500");
+// res.status(500).render("500", {
+//   pageTitle: "Error!",
+//   path: "/500",
+//   isAuthenticated: req.session.isLoggedIn,
+// });
+// });
 
 mongoose
   .connect(MONGODB_URI)

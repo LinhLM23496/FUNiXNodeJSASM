@@ -90,21 +90,26 @@ exports.getReportDaily = (req, res, next) => {
       ])
         .then((result) => {
           const [work, leave] = result;
+
+          // Thời gian đăng ký nghỉ
           let timeLeave = 0;
-          leave.map((leave) => {
+          leave.forEach((leave) => {
             timeLeave += leave.leaveTime;
           });
-          let lastTotalTime = work[work.length - 1]?.totalWorkTime;
 
-          // format thời gian về second để tính tổng -> formet về giò để hiện UI
-          let lastTotalTimeToSeconds =
-            moment.duration(lastTotalTime).asSeconds() + timeLeave * 3600;
+          // Tổng thời gian làm việc
+          let lastTotalTime = 0;
+          work.map((work) => {
+            moment.duration(work.workTime).asSeconds();
+            lastTotalTime += moment.duration(work.workTime).asSeconds();
+          });
+          // tổng thời gian làm việc + thời gian đăng ký
+          let lastTotalTimeToSeconds = lastTotalTime + timeLeave * 3600;
 
           let lastTotalTimeToHours = moment
             .utc(lastTotalTimeToSeconds * 1000)
             .format("HH:mm:ss");
 
-          console.log(lastTotalTimeToHours);
           res.render("report/daily", {
             user: user,
             prods: work,
@@ -154,11 +159,15 @@ exports.postReportDaily = (req, res, next) => {
       leave.map((leave) => {
         timeLeave += leave.leaveTime;
       });
-      let lastTotalTime = work[work.length - 1]?.totalWorkTime;
 
-      // format thời gian về second để tính tổng -> formet về giò để hiện UI
-      let lastTotalTimeToSeconds =
-        moment.duration(lastTotalTime).asSeconds() + timeLeave * 3600;
+      // Tổng thời gian làm việc
+      let lastTotalTime = 0;
+      work.map((work) => {
+        moment.duration(work.workTime).asSeconds();
+        lastTotalTime += moment.duration(work.workTime).asSeconds();
+      });
+      // tổng thời gian làm việc + thời gian đăng ký
+      let lastTotalTimeToSeconds = lastTotalTime + timeLeave * 3600;
 
       let lastTotalTimeToHours = moment
         .utc(lastTotalTimeToSeconds * 1000)
