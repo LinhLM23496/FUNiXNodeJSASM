@@ -95,15 +95,19 @@ exports.postWorkEnd = (req, res, next) => {
     });
     let total = 0;
     let workStartToSecond = moment.duration(work.start).asSeconds();
-    // tính thời gian tăng ca sau 18h00
-    if (formatHoursToSeconds > 64800 && workStartToSecond < 64800) {
-      overTime = formatHoursToSeconds - 64800;
+    //tính thời gian làm việc - nếu điểm danh qua này mới thì mất ngày làm việc
+    const time = 0;
+    if (formatHoursToSeconds > workStartToSecond) {
+      time = formatHoursToSeconds - workStartToSecond;
+    } else {
+      time = 0;
     }
-    if (formatHoursToSeconds > 64800 && workStartToSecond > 64800) {
-      overTime = formatHoursToSeconds - workStartToSecond;
+    // tính thời gian tăng ca sau sau 8h làm việc | 28800 là 8h làm việc
+    if (time > 0) {
+      overTime = time - 28800;
+    } else {
+      overTime = 0;
     }
-    //tính thời gian làm việc
-    const time = formatHoursToSeconds - workStartToSecond;
 
     user.statusWork = false;
     user.time = user.time - time;

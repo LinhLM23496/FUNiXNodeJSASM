@@ -1,4 +1,8 @@
 const moment = require("moment");
+const fs = require("fs");
+const path = require("path");
+const PDFDocument = require("pdfkit");
+
 const User = require("../models/user");
 const Covid = require("../models/covid");
 
@@ -154,4 +158,109 @@ exports.postVacxin = (req, res, next) => {
       return res.redirect("/covid/vacxin");
     })
     .catch((err) => console.log(err));
+};
+
+// page Report Covid
+exports.getReportCovid = (req, res, next) => {
+  req.user
+    .populate("_id")
+    .then((user) => {
+      res.render("covid/reportCovid", {
+        user: user,
+        user_manage: false,
+        selected: "",
+        pageTitle: "Report Covid",
+        path: "/covid/reportcovid",
+      });
+    })
+    .catch((err) => console.log(err));
+};
+exports.postReportCovid = (req, res, next) => {
+  const userId = req.body.userId;
+  const user_chose = req.body.user_chose;
+  Promise.all([User.findById(userId), Covid.find({ userId: user_chose })])
+    .then((result) => {
+      const [user, covid] = result;
+      res.render("covid/reportCovid", {
+        user: user,
+        user_manage: covid,
+        selected: user_chose,
+        pageTitle: "Report Covid",
+        path: "/covid/reportcovid",
+      });
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.getInvoice = (req, res, next) => {
+  const selected = req.params.selected;
+  Covid.find({ userId: selected })
+    .then((covid) => {
+      if (!covid) {
+        return next(new Error("No order found."));
+      }
+      let userName = "";
+      let check = false;
+      req.user.manage.forEach((user) => {
+        if (user._id.toString() === selected) {
+          check = true;
+          userName = user.name;
+        }
+      });
+      if (!check) {
+        return next(new Error("Unauthorized"));
+      }
+      const invoiceName = "invoice-" + selected + ".pdf";
+      const invoicePath = path.join("data", "invoices", invoiceName);
+      const positive = (boolean) => {
+        if (boolean) {
+          return "Positive";
+        } else {
+          return "Negative";
+        }
+      };
+
+      const pdfDoc = new PDFDocument({ margin: 30, size: "A4" });
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'inline; filename="' + invoiceName + '"'
+      );
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      pdfDoc.fontSize(26).text("Information Covid", {
+        underline: true,
+        align: "center",
+      });
+      pdfDoc.text("-----------------------", {
+        align: "center",
+      });
+      pdfDoc.text("Tên: " + userName, {
+        align: "center",
+      });
+
+      // move to down
+      pdfDoc.moveDown();
+      covid.forEach((prod) => {
+        pdfDoc
+          .fontSize(14)
+          .text(
+            prod.date +
+              " - " +
+              prod.time +
+              "||" +
+              prod.temperature +
+              "||" +
+              positive(prod.positive)
+          );
+      });
+      pdfDoc.text("---");
+      pdfDoc.end();
+
+      const file = fs.createReadStream(invoicePath);
+
+      file.pipe(res);
+    })
+    .catch((err) => next(err));
 };

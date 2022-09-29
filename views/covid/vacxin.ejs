@@ -11,12 +11,13 @@
                         <label for="addressVacxin1">
                             Mũi 1:
                         </label>
-                        <select class="form-control" id="addressVacxin1" name="addressVacxin1" value="1">
+                        <select class="form-control" id="addressVacxin1" name="addressVacxin1">
                             <option value="Sinopharm" <% if (user.vacxin1==="Sinopharm" ) {%>selected<% } %> >Sinopharm
                             </option>
                             <option value="Pfizer" <% if (user.vacxin1==="Pfizer" ) {%>selected<% } %> >Pfizer
                             </option>
-                            <option value="1" <% if (user.vacxin1==="Moderna" ) {%>selected<% } %> >Moderna</option>
+                            <option value="Moderna" <% if (user.vacxin1==="Moderna" ) {%>selected<% } %> >Moderna
+                            </option>
                             <option value="AstraZeneca" <% if (user.vacxin1==="AstraZeneca" ) {%>selected<% } %>
                                     >AstraZeneca</option>
                         </select>

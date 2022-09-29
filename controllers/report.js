@@ -90,11 +90,21 @@ exports.getReportDaily = (req, res, next) => {
       ])
         .then((result) => {
           const [work, leave] = result;
-          let lastTotalTime = work[work.length - 1]?.totalWorkTime;
           let timeLeave = 0;
           leave.map((leave) => {
             timeLeave += leave.leaveTime;
           });
+          let lastTotalTime = work[work.length - 1]?.totalWorkTime;
+
+          // format thời gian về second để tính tổng -> formet về giò để hiện UI
+          let lastTotalTimeToSeconds =
+            moment.duration(lastTotalTime).asSeconds() + timeLeave * 3600;
+
+          let lastTotalTimeToHours = moment
+            .utc(lastTotalTimeToSeconds * 1000)
+            .format("HH:mm:ss");
+
+          console.log(lastTotalTimeToHours);
           res.render("report/daily", {
             user: user,
             prods: work,
@@ -102,7 +112,7 @@ exports.getReportDaily = (req, res, next) => {
             today: formatDate2,
             search: "",
             timeLeave: timeLeave,
-            lastTotalTime: lastTotalTime,
+            lastTotalTime: lastTotalTimeToHours,
             pageTitle: "Report Daily",
             path: "/report/daily",
           });
@@ -140,12 +150,20 @@ exports.postReportDaily = (req, res, next) => {
   ])
     .then((result) => {
       const [user, work, leave] = result;
-      let lastTotalTime = work[work.length - 1]?.totalWorkTime;
       let timeLeave = 0;
       leave.map((leave) => {
         timeLeave += leave.leaveTime;
       });
-      console.log(req.body.dateDaily);
+      let lastTotalTime = work[work.length - 1]?.totalWorkTime;
+
+      // format thời gian về second để tính tổng -> formet về giò để hiện UI
+      let lastTotalTimeToSeconds =
+        moment.duration(lastTotalTime).asSeconds() + timeLeave * 3600;
+
+      let lastTotalTimeToHours = moment
+        .utc(lastTotalTimeToSeconds * 1000)
+        .format("HH:mm:ss");
+
       res.render("report/daily", {
         user: user,
         prods: work,
@@ -153,7 +171,7 @@ exports.postReportDaily = (req, res, next) => {
         today: req.body.dateDaily,
         search: search,
         timeLeave: timeLeave,
-        lastTotalTime: lastTotalTime,
+        lastTotalTime: lastTotalTimeToHours,
         pageTitle: "Report Daily",
         path: "/report/daily",
       });

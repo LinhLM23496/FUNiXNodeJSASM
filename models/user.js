@@ -24,6 +24,12 @@ const userSchema = new Schema({
     required: false,
   },
   imageUrl: { type: String, required: false },
+  manage: [
+    {
+      type: Object,
+      required: false,
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

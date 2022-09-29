@@ -109,20 +109,23 @@ exports.postSignup = (req, res, next) => {
       return bcrypt
         .hash(password, 12)
         .then((hashedPassword) => {
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            name: "Lê Mạnh Linh",
-            department: "Developer",
-            Dob: "23/04/1996",
-            salaryScale: 2.2,
-            startDate: "08/08/2022",
-            annualLeave: 96,
-            statusWork: false,
-            statusCovid: false,
-            time: 691200,
+          User.find().then((userlv1) => {
+            const user = new User({
+              email: email,
+              password: hashedPassword,
+              name: "Lead lv 3",
+              department: "Developer",
+              Dob: "23/04/1996",
+              salaryScale: 2.2,
+              startDate: "08/08/2022",
+              annualLeave: 96,
+              statusWork: false,
+              statusCovid: false,
+              time: 691200,
+              manage: userlv1,
+            });
+            return user.save();
           });
-          return user.save();
         })
         .then((result) => {
           res.redirect("/login");

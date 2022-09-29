@@ -97,6 +97,14 @@
               href="/covid/positive"
               >BÁO NHIỄM</a
             >
+
+            <% if (isManage) { %>
+            <a
+              class="dropdown-item <%= path === '/covid/reportcovid' ? 'active' : '' %>"
+              href="/covid/reportcovid"
+              >THÔNG TIN COVID</a
+            >
+            <% } %>
           </div>
         </li>
         <% } %>

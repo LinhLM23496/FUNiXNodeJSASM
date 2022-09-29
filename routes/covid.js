@@ -17,4 +17,9 @@ router.post("/positive", isAuth, reportController.postPositive);
 router.get("/vacxin", isAuth, reportController.getVacxin);
 router.post("/vacxin", isAuth, reportController.postVacxin);
 
+router.get("/reportcovid", isAuth, reportController.getReportCovid);
+router.post("/reportcovid", isAuth, reportController.postReportCovid);
+
+router.get("/invoice/:selected", isAuth, reportController.getInvoice);
+
 module.exports = router;
