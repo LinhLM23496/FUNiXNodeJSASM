@@ -6,42 +6,47 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
             <div class="grid">
-                <article class="user-content">
-                    <div class="card-image">
-                        <img src="<%= user.imageUrl %>" alt="<%= user.title %>">
+                <% if (errorMessage) { %>
+                    <div class="user-message user-message--error">
+                        <%= errorMessage %>
                     </div>
-                    <h2 class="mt-3 ml-4 user-name">
-                        <%= user.name %>
-                        <i class="bi bi-circle-fill ml-2 works-status" 
-                            <% if(user.statusWork) { %>
-                                style="color: rgb(59, 255, 59);"
-                            <% } else { %>
-                                style="color: red;"
-                            <% } %>
-                        >
-                        </i>
-                    </h2>
-                    <p class="product__description">Email: 
-                        <%= user.email %>
-                    </p>
-                    <p class="product__description">Phòng ban: 
-                        <%= user.department %>
-                    </p>
-                    <p class="product__description">Ngày sinh: 
-                        <%= user.Dob %>
-                    </p>
-                    <p class="product__description">Ngày bắt đầu: 
-                        <%= user.startDate %>
-                    </p>
-                    <p class="product__description">Số ngày phép: 
-                        <%= (user.annualLeave/8).toFixed(1) %>
-                    </p>
-                    <form action="/user" method="post">
-                        <label for="imageUrl">Url : <input type="text" class="imageUrl" id="imageUrl" name="imageUrl" /></label>
-                        <input type="hidden" value="<%= user._id %>" name="userId">
-                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                        <button type="submit" class="btn btn-shimmer btn-primary" >Cập nhật hình ảnh</button>
-                    </form>
-                </article>
+                    <% } %>
+                        <article class="user-content">
+                            <div class="card-image">
+                                <img src="<%= user.imageUrl %>" alt="<%= user.title %>">
+                            </div>
+                            <h2 class="mt-3 user-name">
+                                <%= user.name %>
+                                    <i class="bi bi-circle-fill ml-2 works-status" <% if(user.statusWork) { %>
+                                        style="color: rgb(59, 255, 59);"
+                                        <% } else { %>
+                                            style="color: red;"
+                                            <% } %>
+                                                >
+                                    </i>
+                            </h2>
+                            <p class="product__description">Email:
+                                <%= user.email %>
+                            </p>
+                            <p class="product__description">Phòng ban:
+                                <%= user.department %>
+                            </p>
+                            <p class="product__description">Ngày sinh:
+                                <%= user.Dob %>
+                            </p>
+                            <p class="product__description">Ngày bắt đầu:
+                                <%= user.startDate %>
+                            </p>
+                            <p class="product__description">Số ngày phép:
+                                <%= (user.annualLeave/8).toFixed(1) %>
+                            </p>
+                            <form action="/user" method="post" enctype="multipart/form-data">
+                                <label for="image">Image</label>
+                                <input type="file" name="image" id="image">
+                                <input type="hidden" value="<%= user._id %>" name="userId">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                <button type="submit" class="btn btn-shimmer btn-primary">Cập nhật hình ảnh</button>
+                            </form>
+                        </article>
             </div>
             <%- include('../includes/end.ejs') %>
