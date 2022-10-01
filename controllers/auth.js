@@ -24,20 +24,6 @@ exports.getLogin = (req, res, next) => {
   });
 };
 
-exports.getSignup = (req, res, next) => {
-  let message = req.flash("error");
-  if (message.length > 0) {
-    message = message[0];
-  } else {
-    message = null;
-  }
-  res.render("auth/signup", {
-    path: "/signup",
-    pageTitle: "Signup",
-    errorMessage: message,
-  });
-};
-
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -92,44 +78,6 @@ exports.postLogin = (req, res, next) => {
           });
         })
         .catch((err) => {
-          res.redirect("/login");
-        });
-    })
-    .catch((err) => console.log(err));
-};
-
-exports.postSignup = (req, res, next) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
-  User.findOne({ email: email })
-    .then((userDoc) => {
-      if (userDoc) {
-        req.flash("error", "E-Mail đã được dùng, hay chọn một Email khác");
-        return res.redirect("/signup");
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then((hashedPassword) => {
-          User.find().then((userlv1) => {
-            const user = new User({
-              email: email,
-              password: hashedPassword,
-              name: "Lead lv 3",
-              department: "Developer",
-              Dob: "23/04/1996",
-              salaryScale: 2.2,
-              startDate: "08/08/2022",
-              annualLeave: 96,
-              statusWork: false,
-              statusCovid: false,
-              time: 691200,
-              manage: userlv1,
-            });
-            return user.save();
-          });
-        })
-        .then((result) => {
           res.redirect("/login");
         });
     })
