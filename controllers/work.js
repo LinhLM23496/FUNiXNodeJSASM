@@ -138,28 +138,26 @@ exports.getCheckLeave = (req, res, next) => {
   req.user
     .populate("_id")
     .then((user) => {
-      Promise.all([User.find({ _id: user._id, lock: formatMonthLock })]).then(
-        (userCheck) => {
-          if (userCheck.length > 0) {
-            lock = true;
-          }
-          res.render("work/checkLeave", {
-            user: user,
-            checkLeave: 0,
-            errorMessage: "",
-            oldInput: {
-              leaveDate: "",
-              leaveTime: 0,
-              reason: "",
-              leaveFromDate: "",
-              leaveToDate: "",
-            },
-            lock: lock,
-            pageTitle: "Số ngày nghỉ",
-            path: "/checkleave",
-          });
+      User.find({ _id: user._id, lock: formatMonthLock }).then((userCheck) => {
+        if (userCheck.length > 0) {
+          lock = true;
         }
-      );
+        res.render("work/checkLeave", {
+          user: user,
+          checkLeave: 0,
+          errorMessage: "",
+          oldInput: {
+            leaveDate: "",
+            leaveTime: 0,
+            reason: "",
+            leaveFromDate: "",
+            leaveToDate: "",
+          },
+          lock: lock,
+          pageTitle: "Số ngày nghỉ",
+          path: "/checkleave",
+        });
+      });
     })
     .catch((err) => console.log(err));
 };

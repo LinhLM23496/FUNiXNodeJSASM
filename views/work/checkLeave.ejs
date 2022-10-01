@@ -12,6 +12,11 @@
                     </div>
                     <% } %>
                         <% if(user.annualLeave> 0) { %>
+                            <h2 style="text-align: center;">Xin nghỉ phép</h2>
+                            <div>
+                                <p style="text-align: center;">Số ngày còn lại: <%= user.annualLeave/8 %>
+                                </p>
+                            </div>
                             <div class="grid">
                                 <form class="mt-5" action="/import_leave" method="POST">
                                     <label for="checkLeave"><input type="radio" id="checkLeave" name="checkLeave"
@@ -28,11 +33,6 @@
                             <% if(checkLeave==1) { %>
                                 <div class="grid mt-5">
                                     <article class="articleSize">
-                                        <h2 style="text-align: center;">Xin nghỉ phép</h2>
-                                        <div>
-                                            <p>Số ngày còn lại: <%= user.annualLeave/8 %>
-                                            </p>
-                                        </div>
                                         <form class="p-3" action="/post_date_leave" method="POST">
                                             <div class="form-group">
                                                 <label for="leaveDate" class="col-form-label">Ngày nghỉ</label>
@@ -61,11 +61,6 @@
                                 <% } else if (checkLeave==2) {%>
                                     <div class="grid mt-5">
                                         <article class="articleSize">
-                                            <h2 style="text-align: center;">Xin nghỉ phép</h2>
-                                            <div>
-                                                <p>Số ngày còn lại: <%= user.annualLeave/8 %>
-                                                </p>
-                                            </div>
                                             <form class="p-3" style="width: 300px;" action="/post_many_date_leave"
                                                 method="POST">
                                                 <div class="form-group">

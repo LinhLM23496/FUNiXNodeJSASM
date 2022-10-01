@@ -23,6 +23,12 @@
                 </div>
                 <% if (prods.length> 0) { %>
                     <div class="centered mt-5">
+                        <h4 class="product__description">Quản lý:
+                            <%= user.user_manage?.name %>
+                        </h4>
+                        <h4 class="product__description">ID Quản lý:
+                            <%= user.user_manage?.user_manage_id %>
+                        </h4>
                         <h4>Ngày: <%= date %>
                         </h4>
                         <h4>Đăng ký giờ nghỉ: <%= timeLeave %> giờ
@@ -30,6 +36,15 @@
                         <h4>Tổng giờ đã làm: <%= user.statusWork ? 'chưa kết thúc làm việc' : lastTotalTime %>
                         </h4>
                     </div>
+                    <form action="/report/daily" method="post">
+                        <input type="hidden" name="search" class="btn-submit" id="search" value=<%=search %>>
+                        <input type="hidden" name="dateDaily" class="btn-submit" id="dateDaily" value=<%=today %>>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" value="<%= user._id %>" name="userId">
+                        <label>Số lượng hiện thị: </label><input type="number" name="numberFilter" value=<%=numberFilter
+                            %> min="0" max="100">
+                        <button type="submit" class="btn-shimmer btn-info">Chọn</button>
+                    </form>
                     <table class="table mt-5">
                         <tr>
                             <th>Nơi làm việc</th>
@@ -59,9 +74,14 @@
                             </tr>
                             <% } %>
                     </table>
-                    <% } else { %>
-                        <h1 class="centered mt-5">Bạn chưa làm việc!</h1>
-                        <% } %>
+
+                    <%- include('../includes/pagination.ejs', {currentPage: currentPage, nextPage: nextPage,
+                        previousPage: previousPage, lastPage: lastPage, hasNextPage: hasNextPage, hasPreviousPage:
+                        hasPreviousPage}) %>
+
+                        <% } else { %>
+                            <h1 class="centered mt-5">Bạn chưa làm việc!</h1>
+                            <% } %>
             </main>
             <%- include('../includes/end.ejs') %>
     </body>

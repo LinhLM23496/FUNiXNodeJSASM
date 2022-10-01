@@ -8,6 +8,12 @@
     <main>
         <div class="grid mt-5">
             <article class="card__content">
+                <h4 class="product__description">Quản lý:
+                    <%= user.user_manage?.name %>
+                </h4>
+                <h4 class="product__description">ID Quản lý:
+                    <%= user.user_manage?.user_manage_id %>
+                </h4>
                 <form action="/report/salary" method="POST">
                     <input type="month" name="month" id="month">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">

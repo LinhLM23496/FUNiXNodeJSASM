@@ -3,7 +3,8 @@ const User = require("../models/user");
 const Work = require("../models/work");
 const Leave = require("../models/leave");
 
-// page report giờ làm hằng ngày
+let ITEMS_PER_PAGE = 2;
+// get page giờ làm hằng ngày
 exports.getReportDaily = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
@@ -11,17 +12,23 @@ exports.getReportDaily = (req, res, next) => {
   const formatDate2 = moment(today).format("YYYY/MM/DD");
   const formatDate3 = moment(today).format("YYYY-MM-DD");
 
+  const page = +req.query.page || 1;
+  let totalItems = 0;
+
   req.user
     .populate("_id")
     .then((user) => {
       Promise.all([
         Work.find({ date: formatDate2, userId: user._id }),
+        Work.find({ date: formatDate2, userId: user._id }).countDocuments(),
+        Work.find({ date: formatDate2, userId: user._id })
+          .skip((page - 1) * ITEMS_PER_PAGE)
+          .limit(ITEMS_PER_PAGE),
         Leave.find({ leaveDate: formatDate2, userId: user._id }),
       ])
         .then((result) => {
-          const [work, leave] = result;
-
-          console.log(leave);
+          const [workAll, workCount, workFilter, leave] = result;
+          totalItems = workCount;
           // Thời gian đăng ký nghỉ
           let timeLeave = 0;
           leave.forEach((leave) => {
@@ -30,9 +37,9 @@ exports.getReportDaily = (req, res, next) => {
 
           // Tổng thời gian làm việc
           let lastTotalTime = 0;
-          work.map((work) => {
-            moment.duration(work.workTime).asSeconds();
-            lastTotalTime += moment.duration(work.workTime).asSeconds();
+          workAll.map((workAll) => {
+            moment.duration(workAll.workTime).asSeconds();
+            lastTotalTime += moment.duration(workAll.workTime).asSeconds();
           });
           // tổng thời gian làm việc + thời gian đăng ký
           let lastTotalTimeToSeconds = lastTotalTime + timeLeave * 3600;
@@ -43,12 +50,20 @@ exports.getReportDaily = (req, res, next) => {
 
           res.render("report/daily", {
             user: user,
-            prods: work,
+            workAll: workAll,
+            prods: workFilter,
             date: formatDate,
             today: formatDate3,
             search: "",
+            numberFilter: ITEMS_PER_PAGE,
             timeLeave: timeLeave,
             lastTotalTime: lastTotalTimeToHours,
+            currentPage: page,
+            hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+            hasPreviousPage: page > 1,
+            nextPage: page + 1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
             pageTitle: "Report Daily",
             path: "/report/daily",
           });
@@ -62,6 +77,11 @@ exports.postReportDaily = (req, res, next) => {
   // Lấy data input search và lọc nó vs DB Work
   const userId = req.body.userId;
   let search = req.body.search;
+  const page = +req.query.page || 1;
+  let totalItems = 0;
+  ITEMS_PER_PAGE = req.body.numberFilter
+    ? req.body.numberFilter
+    : ITEMS_PER_PAGE;
 
   // Lấy ngày giờ hiện tại
   const today = new Date();
@@ -83,10 +103,23 @@ exports.postReportDaily = (req, res, next) => {
       date: date,
       userId: userId,
     }),
+    Work.find({
+      position: { $regex: search },
+      date: date,
+      userId: userId,
+    }).countDocuments(),
+    Work.find({
+      position: { $regex: search },
+      date: date,
+      userId: userId,
+    })
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE),
     Leave.find({ leaveDate: date, userId: userId }),
   ])
     .then((result) => {
-      const [user, work, leave] = result;
+      const [user, workAll, workCount, workFilter, leave] = result;
+      totalItems = workCount;
       let timeLeave = 0;
       leave.map((leave) => {
         timeLeave += leave.leaveTime;
@@ -94,9 +127,9 @@ exports.postReportDaily = (req, res, next) => {
 
       // Tổng thời gian làm việc
       let lastTotalTime = 0;
-      work.map((work) => {
-        moment.duration(work.workTime).asSeconds();
-        lastTotalTime += moment.duration(work.workTime).asSeconds();
+      workAll.map((workAll) => {
+        moment.duration(workAll.workTime).asSeconds();
+        lastTotalTime += moment.duration(workAll.workTime).asSeconds();
       });
       // tổng thời gian làm việc + thời gian đăng ký
       let lastTotalTimeToSeconds = lastTotalTime + timeLeave * 3600;
@@ -107,12 +140,105 @@ exports.postReportDaily = (req, res, next) => {
 
       res.render("report/daily", {
         user: user,
-        prods: work,
+        workAll: workAll,
+        prods: workFilter,
         date: date.split("/").reverse().join("/"),
         today: req.body.dateDaily,
         search: search,
+        numberFilter: ITEMS_PER_PAGE,
         timeLeave: timeLeave,
         lastTotalTime: lastTotalTimeToHours,
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+        pageTitle: "Report Daily",
+        path: "/report/daily",
+      });
+    })
+    .catch((err) => console.log(err));
+};
+// Action chuyển trang
+exports.postReportDailyFilter = (req, res, next) => {
+  // Lấy data input search và lọc nó vs DB Work
+  const userId = req.body.userId;
+  let search = req.body.search;
+  const page = +req.body.nextPage || 1;
+  let totalItems = 0;
+
+  // Lấy ngày giờ hiện tại
+  const today = new Date();
+  const formatDate = moment(today).format("DD/MM/YYYY");
+  const formatDate2 = moment(today).format("YYYY/MM/DD");
+
+  // Lấy ngày giờ từ input
+  let date = "";
+  if (req.body.dateDaily) {
+    date = moment(req.body.dateDaily).format("YYYY/MM/DD");
+  } else {
+    date = formatDate2;
+  }
+
+  Promise.all([
+    User.findById(userId),
+    Work.find({
+      position: { $regex: search },
+      date: date,
+      userId: userId,
+    }),
+    Work.find({
+      position: { $regex: search },
+      date: date,
+      userId: userId,
+    }).countDocuments(),
+    Work.find({
+      position: { $regex: search },
+      date: date,
+      userId: userId,
+    })
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE),
+    Leave.find({ leaveDate: date, userId: userId }),
+  ])
+    .then((result) => {
+      const [user, workAll, workCount, workFilter, leave] = result;
+      totalItems = workCount;
+      let timeLeave = 0;
+      leave.map((leave) => {
+        timeLeave += leave.leaveTime;
+      });
+
+      // Tổng thời gian làm việc
+      let lastTotalTime = 0;
+      workAll.map((workAll) => {
+        moment.duration(workAll.workTime).asSeconds();
+        lastTotalTime += moment.duration(workAll.workTime).asSeconds();
+      });
+      // tổng thời gian làm việc + thời gian đăng ký
+      let lastTotalTimeToSeconds = lastTotalTime + timeLeave * 3600;
+
+      let lastTotalTimeToHours = moment
+        .utc(lastTotalTimeToSeconds * 1000)
+        .format("HH:mm:ss");
+
+      res.render("report/daily", {
+        user: user,
+        workAll: workAll,
+        prods: workFilter,
+        date: date.split("/").reverse().join("/"),
+        today: req.body.dateDaily,
+        search: search,
+        numberFilter: ITEMS_PER_PAGE,
+        timeLeave: timeLeave,
+        lastTotalTime: lastTotalTimeToHours,
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
         pageTitle: "Report Daily",
         path: "/report/daily",
       });
@@ -120,7 +246,7 @@ exports.postReportDaily = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-// get page Lương
+// get page Lương tháng
 exports.getReportSalary = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
@@ -139,11 +265,7 @@ exports.getReportSalary = (req, res, next) => {
 exports.postReportSalary = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
-  const formatMonth = moment(today).format("MM-YYYY");
   const formatMonth2 = moment(today).format("YYYY-MM");
-  const formatMonthStart = moment(today).format("YYYY/MM/01");
-  const formatMonthEnd = moment(today).format("YYYY/MM/31");
-
   const userId = req.body.userId;
 
   let month = "";
@@ -195,7 +317,7 @@ exports.postReportSalary = (req, res, next) => {
       res.render("report/salary", {
         user: user,
         haveWork: true,
-        today: month,
+        today: month.split("-").reverse().join("/"),
         salaryScale: salaryScale.toFixed(0),
         workTime: workTime,
         overTime: overTime,

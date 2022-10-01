@@ -135,6 +135,27 @@ form {
   color: red;
 }
 
+.pagination {
+  margin-top: 2rem;
+  text-align: center;
+  justify-content: center;
+}
+
+.pagination a {
+  text-decoration: none;
+  color: #00695c;
+  padding: 0.5rem;
+  border: 1px solid #00695c;
+  margin: 0 1rem;
+}
+
+.pagination a:hover,
+.pagination a:active,
+.pagination button.active {
+  background: #00695c;
+  color: white;
+}
+
 @media (max-width: 575.98px) {
   body {
     font-size: 12px;

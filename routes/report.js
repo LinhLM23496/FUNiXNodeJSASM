@@ -16,4 +16,6 @@ router.get("/daily", isAuth, reportController.getReportDaily);
 
 router.post("/daily", isAuth, reportController.postReportDaily);
 
+router.post("/daily_filter", isAuth, reportController.postReportDailyFilter);
+
 module.exports = router;

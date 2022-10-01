@@ -1,0 +1,36 @@
+<section class="pagination">
+  <form action="/report/daily_filter" method="post">
+    <input type="hidden" value="<%= user._id %>" name="userId">
+    <input type="hidden" name="search" id="search" value=<%=search %>>
+    <input type="hidden" name="dateDaily" id="dateDaily" value=<%=today %>>
+    <input type="hidden" name="numberFilter" value=<%=numberFilter %> min="0" max="100">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <% if (currentPage !==1 && previousPage !==1) { %>
+      <button type="submit" value="1" name="nextPage">
+        1
+      </button>
+      <% } %>
+
+        <% if (hasPreviousPage) { %>
+          <button type="submit" value="<%= previousPage %>" name="nextPage">
+            <%= previousPage %>
+          </button>
+          <% } %>
+
+            <button type="submit" class="active" value="<%= currentPage %>" name="nextPage">
+              <%= currentPage %>
+            </button>
+
+            <% if (hasNextPage) { %>
+              <button type="submit" value="<%= nextPage %>" name="nextPage">
+                <%= nextPage %>
+              </button>
+              <% } %>
+
+                <% if (lastPage !==currentPage && nextPage !==lastPage) { %>
+                  <button type="submit" value="<%= lastPage %>" name="nextPage">
+                    <%= lastPage %>
+                  </button>
+                  <% } %>
+  </form>
+</section>
