@@ -6,12 +6,12 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
             <div class="grid">
+                        <article class="user-content">
                 <% if (errorMessage) { %>
                     <div class="user-message user-message--error">
                         <%= errorMessage %>
                     </div>
                     <% } %>
-                        <article class="user-content">
                             <div class="card-image">
                                 <img src="<%= user.imageUrl %>" alt="<%= user.title %>">
                             </div>
@@ -30,6 +30,12 @@
                             </p>
                             <p class="product__description">Phòng ban:
                                 <%= user.department %>
+                            </p>
+                            <p class="product__description">Quản lý:
+                                <%= user.user_manage?.name %>
+                            </p>
+                            <p class="product__description">ID Quản lý:
+                                <%= user.user_manage?.user_manage_id %>
                             </p>
                             <p class="product__description">Ngày sinh:
                                 <%= user.Dob %>

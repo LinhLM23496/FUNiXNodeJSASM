@@ -8,7 +8,7 @@
             <main class="report">
             <div class="grid">
                 <article class="user-content">
-                    <div class="manage_chose">
+                    <div class="manage_center manage_width">
                         <h2 class="mb-3 ml-4 user-name">
                             Quản lý: <%= user_manage.name %>
                         </h2>
@@ -31,7 +31,7 @@
                         <% } %>
                     </div>
                     <% if(user_chose) { %>
-                        <div class="report-input mt-5">
+                        <div class="report-input manage_center mt-5">
                             <form action="/manage/search" method="post">
                                 <input type="text" name="search" class="btn-submit" id="search" placeholder="Nơi làm việc"
                                     value=<%=search %>>
@@ -91,7 +91,11 @@
                                                 <input type="hidden" name="date" class="btn-submit" id="date" value=<%=today %>>
                                                 <input type="hidden" value="<%= user_manage._id %>" name="user_manage_id">
                                                 <input type="hidden" value="<%= user_chose._id %>" name="user_chose_id">
-                                                <button class="ml-4 <% if (!user_chose.statusWork || work._id.toString() !== user_chose.workId.toString()) { %>btn-danger<% } %>" <% if (user_chose.statusWork && work._id.toString() === user_chose.workId.toString()) { %>disabled<% } %> >Xóa</button>
+                                                <button type="submit" class="ml-4 <% if ((!user_chose.statusWork || work._id.toString() !== user_chose.workId.toString()) && !lock) { %>
+                                                    btn-danger<% } %>" 
+                                                    <% if (user_chose.statusWork && work._id.toString() === user_chose.workId.toString() || lock) { %>
+                                                        disabled<% } %>
+                                                     >Xóa</button>
                                             </form>
                                         </td>
                                     </tr>

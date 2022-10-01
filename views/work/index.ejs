@@ -22,7 +22,7 @@
                             </div>
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                             <input type="hidden" value="<%= user._id %>" name="userId">
-                            <button type="submit" class="btn-shimmer btn-primary mt-5">Điểm danh vào làm</button>
+                            <button type="submit" class="<% if(!lock){ %>btn-shimmer btn-primary<% } %> mt-5" <% if(lock){ %>disabled<% } %>>Điểm danh vào làm</button>
                         </form>
                         <% } else { %>
                             <form class="" action="/postWorkend" method="POST">
@@ -42,7 +42,7 @@
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <input type="hidden" value="<%= user._id %>" name="userId">
                                 <input type="hidden" value="<%= work._id %>" name="workId">
-                                <button type="submit" class="btn-shimmer btn-primary mt-5">Điểm danh ra
+                                <button type="submit" class="<% if(!lock){ %>btn-shimmer btn-primary<% } %> mt-5" <% if(lock){ %>disabled<% } %>>Điểm danh ra
                                     về</button>
                             </form>
                             <% } %>

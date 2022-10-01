@@ -1,7 +1,9 @@
 const bcrypt = require("bcryptjs");
+const session = require("express-session");
 const { validationResult } = require("express-validator/check");
 
 const User = require("../models/user");
+let back = "";
 
 exports.getLogin = (req, res, next) => {
   let message = req.flash("error");
@@ -75,7 +77,7 @@ exports.postLogin = (req, res, next) => {
             req.session.isLoggedIn = true;
             req.session.user = user;
             return req.session.save((err) => {
-              res.redirect("/");
+              res.redirect(back ? back : "/");
             });
           }
           return res.status(422).render("auth/login", {
@@ -135,7 +137,8 @@ exports.postSignup = (req, res, next) => {
 };
 
 exports.postLogout = (req, res, next) => {
+  back = req.session.back;
   req.session.destroy((err) => {
-    res.redirect("/");
+    res.redirect("/login");
   });
 };

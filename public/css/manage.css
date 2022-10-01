@@ -1,0 +1,11 @@
+.manage_center {
+  margin: auto;
+}
+.manage_width {
+  width: 450px;
+}
+
+.manage_month {
+  display: flex;
+  width: 780px;
+}

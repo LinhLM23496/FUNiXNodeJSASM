@@ -23,10 +23,24 @@ const userSchema = new Schema({
     ref: "Work",
     required: false,
   },
+  user_manage: {
+    user_manage_id: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: false,
+    },
+    name: { type: String, required: false },
+  },
   imageUrl: { type: String, required: false },
   manage: [
     {
       type: Object,
+      required: false,
+    },
+  ],
+  lock: [
+    {
+      type: String,
       required: false,
     },
   ],

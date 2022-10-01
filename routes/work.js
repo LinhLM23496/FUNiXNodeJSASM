@@ -15,14 +15,30 @@ router.post("/postWorkend", isAuth, workController.postWorkEnd);
 
 router.post("/postWorkstart", isAuth, workController.postWorkstart);
 
-// check số ngày
+// get page nghỉ phép
 router.get("/checkleave", isAuth, workController.getCheckLeave);
 
-router.post("/postCheckLeave", isAuth, workController.postCheckLeave);
+router.post("/import_leave", isAuth, workController.postImportLeave);
+
+router.post(
+  "/post_date_leave",
+  [
+    body("leaveDate").isDate().withMessage("Hãy nhập đúng ngày"),
+    body("leaveTime")
+      .isFloat({ min: 1, max: 100 })
+      .withMessage("Hãy nhập số giờ cho phép còn lại."),
+    body("reason")
+      .isLength({ min: 0 })
+      .isAlphanumeric()
+      .withMessage("Không được nhập ký tự đặc biệt."),
+  ],
+  isAuth,
+  workController.postDateLeave
+);
 
 // action form nghỉ phép
 router.post(
-  "/postLeaveDay",
+  "/post_many_date_leave",
   [
     body("leaveDate").isDate().withMessage("Hãy nhập đúng ngày"),
     body("leaveFromDate").isDate().withMessage("Hãy nhập đúng ngày."),
@@ -36,7 +52,7 @@ router.post(
       .withMessage("Không được nhập ký tự đặc biệt."),
   ],
   isAuth,
-  workController.postLeaveDay
+  workController.postManyDateLeave
 );
 
 module.exports = router;

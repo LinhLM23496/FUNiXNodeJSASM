@@ -13,7 +13,7 @@
                     <% } %>
                         <% if(user.annualLeave> 0) { %>
                             <div class="grid">
-                                <form class="mt-5" action="/postCheckLeave" method="POST">
+                                <form class="mt-5" action="/import_leave" method="POST">
                                     <label for="checkLeave"><input type="radio" id="checkLeave" name="checkLeave"
                                             value="1" /> Một ngày</label>
                                     </br>
@@ -22,7 +22,7 @@
                                     </br>
                                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                     <input type="hidden" value="<%= user._id %>" name="userId">
-                                    <button type="submit" class="btn-submit btn-primary">Chọn</button>
+                                    <button type="submit" class="btn-submit <% if(!lock){ %>btn-shimmer btn-primary<% } %>" <% if(lock){ %>disabled<% } %> >Chọn</button>
                                 </form>
                             </div>
                             <% if(checkLeave==1) { %>
@@ -33,7 +33,7 @@
                                             <p>Số ngày còn lại: <%= user.annualLeave/8 %>
                                             </p>
                                         </div>
-                                        <form class="p-3" action="/postLeaveDay" method="POST">
+                                        <form class="p-3" action="/post_date_leave" method="POST">
                                             <div class="form-group">
                                                 <label for="leaveDate" class="col-form-label">Ngày nghỉ</label>
                                                 <input type="date" class="form-control" name="leaveDate" id="leaveDate"
@@ -66,7 +66,7 @@
                                                 <p>Số ngày còn lại: <%= user.annualLeave/8 %>
                                                 </p>
                                             </div>
-                                            <form class="p-3" style="width: 300px;" action="/postLeaveDay"
+                                            <form class="p-3" style="width: 300px;" action="/post_many_date_leave"
                                                 method="POST">
                                                 <div class="form-group">
                                                     <label for="leaveDate" class="col-form-label">Từ ngày</label>

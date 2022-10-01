@@ -14,6 +14,17 @@ router.post("/search", isAuth, manageController.postManageSearch);
 router.post("/delwork", isAuth, manageController.postManageDelWork);
 
 router.get("/month", isAuth, manageController.getManageMonth);
-router.post("/month", isAuth, manageController.postManageMonth);
+router.post(
+  "/user_chose_month",
+  isAuth,
+  manageController.postManageUserChoseMonth
+);
+router.post("/search_month", isAuth, manageController.postManageSearchMonth);
+router.post("/delwork_month", isAuth, manageController.postManageDelWorkMonth);
+router.post(
+  "/success_user_chose",
+  isAuth,
+  manageController.postManageSuccessUser
+);
 
 module.exports = router;

@@ -11,6 +11,7 @@ exports.getTemperature = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
   const formatDateTime = moment(today).format("DD/MM/YYYY - HH:mm:ss");
+  const formatDateTime2 = moment(today).format("YYYY/MM/DD - HH:mm:ss");
   req.user
     .populate("_id")
     .then((user) => {
@@ -24,22 +25,22 @@ exports.getTemperature = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
+//action page Thân nhiệt
 exports.postTemperature = (req, res, next) => {
+  let temperature = req.body.temperature;
   const userId = req.body.userId;
   // Lấy ngày giờ hiện tại
   const today = new Date();
   const formatDate = moment(today).format("DD/MM/YYYY");
+  const formatDate2 = moment(today).format("YYYY/MM/DD");
   const formatTime = moment(today).format("HH:mm:ss");
-  //action page Thân nhiệt
-  let temperature = req.body.temperature;
-  let temperatureDate = formatDate;
-  let temperatureTime = formatTime;
-  Covid.find({ date: temperatureDate, userId: userId })
+
+  Covid.find({ date: formatDate2, userId: userId })
     .then((covid) => {
       if (covid.length === 0) {
         const covid = new Covid({
-          date: temperatureDate,
-          time: temperatureTime,
+          date: formatDate2,
+          time: formatTime,
           temperature: temperature,
           positive: false,
           positiveDay: "",
@@ -82,17 +83,18 @@ exports.postPositive = (req, res, next) => {
   // Lấy ngày giờ hiện tại
   const today = new Date();
   const formatDate = moment(today).format("DD/MM/YYYY");
+  const formatDate2 = moment(today).format("YYYY/MM/DD");
   //action page Báo nhiễm
   let date = "";
 
   if (req.body.date) {
-    date = moment(req.body.date).format("DD/MM/YYYY");
+    date = moment(req.body.date).format("YYYY/MM/DD");
   } else {
-    date = formatDate;
+    date = formatDate2;
   }
   Promise.all([
     User.findById(userId),
-    Covid.find({ date: formatDate, userId: userId }),
+    Covid.find({ date: formatDate2, userId: userId }),
   ])
     .then((result) => {
       const [user, covid] = result;
@@ -100,8 +102,8 @@ exports.postPositive = (req, res, next) => {
       user.save();
       if (covid.length === 0) {
         const covid = new Covid({
-          date: formatDate,
-          temperature: 0,
+          date: formatDate2,
+          temperature: 0.0,
           positive: statusCovid,
           positiveDay: date,
           today: req.body.date,
@@ -236,9 +238,13 @@ exports.getInvoice = (req, res, next) => {
       pdfDoc.text("-----------------------", {
         align: "center",
       });
-      pdfDoc.text("Tên: " + userName, {
+      pdfDoc.text("Name: " + userName, {
         align: "center",
       });
+      pdfDoc
+        .fontSize(14)
+        .font("Helvetica")
+        .text("------------Date------------Temperture-----Result----");
 
       // move to down
       pdfDoc.moveDown();
@@ -249,9 +255,9 @@ exports.getInvoice = (req, res, next) => {
             prod.date +
               " - " +
               prod.time +
-              "||" +
+              "--||--" +
               prod.temperature +
-              "||" +
+              "--||--" +
               positive(prod.positive)
           );
       });
