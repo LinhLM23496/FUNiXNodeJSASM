@@ -6,12 +6,12 @@
     <body>
         <%- include('../includes/navigation.ejs') %>
             <div class="grid">
-                        <article class="user-content">
-                <% if (errorMessage) { %>
-                    <div class="user-message user-message--error">
-                        <%= errorMessage %>
-                    </div>
-                    <% } %>
+                <article class="user-content">
+                    <% if (errorMessage) { %>
+                        <div class="user-message user-message--error">
+                            <%= errorMessage %>
+                        </div>
+                        <% } %>
                             <div class="card-image">
                                 <img src="<%= user.imageUrl %>" alt="<%= user.title %>">
                             </div>
@@ -47,6 +47,6 @@
                                 <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                 <button type="submit" class="btn btn-shimmer btn-primary">Cập nhật hình ảnh</button>
                             </form>
-                        </article>
+                </article>
             </div>
             <%- include('../includes/end.ejs') %>

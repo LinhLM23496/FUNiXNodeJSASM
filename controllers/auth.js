@@ -35,6 +35,12 @@ exports.getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     errorMessage: message,
+    oldInput: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationErrors: [],
   });
 };
 
@@ -77,7 +83,7 @@ exports.postLogin = (req, res, next) => {
             req.session.isLoggedIn = true;
             req.session.user = user;
             return req.session.save((err) => {
-              res.redirect(back ? back : "/");
+              res.redirect("/");
             });
           }
           return res.status(422).render("auth/login", {
@@ -95,45 +101,66 @@ exports.postLogin = (req, res, next) => {
           res.redirect("/login");
         });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
-  User.findOne({ email: email })
-    .then((userDoc) => {
-      if (userDoc) {
-        req.flash("error", "E-Mail đã được dùng, hay chọn một Email khác");
-        return res.redirect("/signup");
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then((hashedPassword) => {
-          User.find().then((userlv1) => {
-            const user = new User({
-              email: email,
-              password: hashedPassword,
-              name: "Lead lv 3",
-              department: "Developer",
-              Dob: "23/04/1996",
-              salaryScale: 2.2,
-              startDate: "08/08/2022",
-              annualLeave: 96,
-              statusWork: false,
-              statusCovid: false,
-              time: 691200,
-              manage: userlv1,
-            });
-            return user.save();
-          });
-        })
-        .then((result) => {
-          res.redirect("/login");
-        });
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render("auth/signup", {
+      path: "/signup",
+      pageTitle: "Signup",
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+        confirmPassword: req.body.confirmPassword,
+      },
+      validationErrors: errors.array(),
+    });
+  }
+
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPassword) => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        name: "Lê Mạnh Linh",
+        department: "Developer",
+        Dob: "23/04/1996",
+        salaryScale: 2.2,
+        startDate: "08/08/2022",
+        annualLeave: 96,
+        statusWork: false,
+        statusCovid: false,
+        time: 691200,
+        manage: [],
+        isManage: false,
+        lock: [],
+        user_manage: {
+          user_manage_id: "633543e3dbf0a2df0616c5b3",
+          name: "Lê Mạnh Linh",
+        },
+      });
+      return user.save();
     })
-    .catch((err) => console.log(err));
+    .then((result) => {
+      res.redirect("/login");
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postLogout = (req, res, next) => {
